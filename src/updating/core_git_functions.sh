@@ -38,10 +38,10 @@ fetch_tags(){
 	if local var=$(git fetch --all -t 2>&1)
 	then 
 		echo $var
-		return True
+		return true
 	else 
 		echo $var
-		return False
+		return false
 	fi
 }
 
@@ -238,3 +238,4 @@ gc_repo(){
 
 	fi
 }
+d
