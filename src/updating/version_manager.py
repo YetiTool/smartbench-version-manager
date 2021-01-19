@@ -8,9 +8,6 @@ class VersionManager(object):
 
         self.sm = screen_manager
 
-        self.compatibility_check_sequence()
-
-
     ## CHECK COMPATIBILITY
 
     version_matrix = None
@@ -33,3 +30,9 @@ class VersionManager(object):
             return True
         else:
             return False
+
+    ## STANDARD UPDATE FUNCTIONS
+
+    ## REPAIR FUNCTIONS
+
+    ## FACTORY SET-UP FUNCTIONS
