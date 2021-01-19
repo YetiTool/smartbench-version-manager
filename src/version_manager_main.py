@@ -22,7 +22,7 @@ from updating import version_manager
 class SBVersionManagerUI(App):
 
     def build(self):
-g
+
         log("Starting App:")
         
         # Establish screens
