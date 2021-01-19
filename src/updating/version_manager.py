@@ -2,7 +2,7 @@ import csv, os
 
 version_matrix_file = './versions/platform-software-matrix.txt'
 
-run_core_git_functions = './src/updating/draft_eval_func.sh src/updating/core_git_functions.sh '
+run_core_git_functions = './src/updating/do.sh src/updating/core_git_functions.sh '
 
 usb_remote = '/media/usb/'
 
