@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# series of functions for executing git commands and determining success
+## series of functions for executing git commands and determining success
 # all functions check success of command, and return 1 or 0 depending on success of execution. 
 # they also return the output from git, which can be saved as an advanced log/feedback for user
 
