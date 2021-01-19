@@ -95,6 +95,22 @@ set_up_usb_repo(){
 	fi
 }
 
+
+set_origin_URL(){
+
+	go_to_dir $1
+
+	if local var=$(git remote set-url origin $2)
+	then 
+		echo $var
+		return 1
+
+	else
+		echo $var
+		return 0
+	fi
+}
+
 # describe current tag & return
 current_version(){
 
@@ -156,7 +172,7 @@ clone_backup_repo(){
 }
 
 # set up backups with git clone
-clone_backup_repos(){
+clone_backup_repos_from_URL(){
 
 	cd $home_dir
 
