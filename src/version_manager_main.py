@@ -22,8 +22,6 @@ from updating import version_manager
 class SBVersionManagerUI(App):
 
     def build(self):
-
-        log("Starting App:")
         
         # Establish screens
         sm = ScreenManager(transition=NoTransition())
