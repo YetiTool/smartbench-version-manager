@@ -23,7 +23,7 @@ class VersionManager(object):
     def _load_matrix(self):
         self.version_matrix = csv.DictReader(open(version_matrix_file))
 
-    # reads in as: '{PL/SW': 'v0.1.1', 'v0.0.1': '1', 'v0.0.2': '1', ... etc.}
+    # reads in as: 'PL/SW': 'v0.1.1', 'v0.0.1': '1', 'v0.0.2': '1', ... etc.
 
     def _check_compatibility(self, PL_version, SW_version):
     # so get object that has PL/SW: 'vx.x.x'
@@ -38,4 +38,4 @@ class VersionManager(object):
 
 ## REPAIR FUNCTIONS
 
-## FACTORY SET-UP FUNCTIONS
+## FACTORY SETUP FUNCTIONS
