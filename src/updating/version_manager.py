@@ -8,7 +8,7 @@ class VersionManager(object):
 
         self.sm = screen_manager
 
-        print(self.compatibility_check_sequence())
+        # print(self.compatibility_check_sequence())
 
 
 ## CHECK COMPATIBILITY
@@ -33,9 +33,3 @@ class VersionManager(object):
             return True
         else:
             return False
-
-## STANDARD UPDATE FUNCTIONS
-
-## REPAIR FUNCTIONS
-
-## FACTORY SETUP FUNCTIONS
