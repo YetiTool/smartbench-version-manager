@@ -68,10 +68,10 @@ fsck_repo(){
 	if local var=$(git fsck --lost-found 2>&1)
 	then 
 		echo $var
-		return True
+		return true
 	else 
 		echo $var
-		return False
+		return false
 	fi
 }
 
