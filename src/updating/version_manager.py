@@ -11,7 +11,7 @@ class VersionManager(object):
         self.compatibility_check_sequence()
 
 
-## CHECK COMPATIBILITY
+    ## CHECK COMPATIBILITY
 
     version_matrix = None
 
@@ -30,9 +30,6 @@ class VersionManager(object):
         dict_object = filter(lambda platform_version: platform_version['PL-SW'] == PL_version, self.version_matrix)[0]
 
         if dict_object[SW_version] == '1':
-
-            print "TRUE TRUE TRUE"
             return True
         else:
-            print "FALSE FALSE FALSE"
             return False

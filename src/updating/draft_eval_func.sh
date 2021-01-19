@@ -1,5 +1,5 @@
 #!/bin/bash
-source $1 && shift && "@a"
+source $1 && shift && "$@"
 
 # Then call any function within any script via:
 
