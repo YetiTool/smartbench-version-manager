@@ -8,7 +8,7 @@ class VersionManager(object):
 
         self.sm = screen_manager
 
-        # print(self.compatibility_check_sequence())
+        print(self.compatibility_check_sequence())
 
 
 ## CHECK COMPATIBILITY
