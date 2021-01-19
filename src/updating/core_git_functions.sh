@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # series of functions for executing git commands and determining success
-# all functions check success of command, and return true or false depending on success of execution. 
+# all functions check success of command, and return 1 or 0 depending on success of execution. 
 # they also return the output from git, which can be saved as an advanced log/feedback for user
 
 ### SYNTAX GUIDE
@@ -38,10 +38,10 @@ fetch_tags(){
 	if local var=$(git fetch --all -t 2>&1)
 	then 
 		echo $var
-		return true
+		return 1
 	else 
 		echo $var
-		return false
+		return 0
 	fi
 }
 
@@ -68,10 +68,10 @@ fsck_repo(){
 	if local var=$(git fsck --lost-found 2>&1)
 	then 
 		echo $var
-		return true
+		return 1
 	else 
 		echo $var
-		return false
+		return 0
 	fi
 }
 
@@ -87,11 +87,11 @@ set_up_usb_repo(){
 	if local var=$(git remote add temp_repository $2)
 	then 
 		echo $var
-		return True
+		return 1
 
 	else
 		echo $var
-		return False
+		return 0
 	fi
 }
 
@@ -103,11 +103,11 @@ current_version(){
 	if local var=$(git describe --tags 2>&1)
 	then
 		echo $var
-		return True
+		return 1
 
 	else
 		echo $var
-		return False
+		return 0
 
 	fi
 }
@@ -123,11 +123,11 @@ checkout_new_version(){
 	if local var=$(git checkout $2 -f 2>&1)
 	then
 		echo $var
-		return True
+		return 1
 
 	else
 		echo $var
-		return False
+		return 0
 
 	fi
 }
@@ -141,15 +141,15 @@ clone_backup_repo(){
 	if [ -d $2]
 	then
 		echo "backup directory already exists!"
-		return False
+		return 0
 	else
 		if local var=$(git clone --bare $1 $2 2>&1)
 		then 
 			echo $var
-			return True
+			return 1
 		else
 			echo $var
-			return False
+			return 0
 
 		fi
 	fi
@@ -178,7 +178,7 @@ repair_repo(){
 	if local var=$(git-repair --force 2>&1)
 	then 
 		echo $var
-		return True
+		return 1
 	else
 		echo $var
 		
@@ -188,17 +188,17 @@ repair_repo(){
 			then 
 				echo $var1
 				echo $var2
-				return True
+				return 1
 		
 			else
 				echo $var1
 				echo $var2
-				return False
+				return 0
 		
 			fi
 		else
 			echo $var1
-			return False
+			return 0
 
 		fi
 	fi
@@ -213,11 +213,11 @@ prune_repo(){
 	if local var=$(git prune 2>&1)
 	then
 		echo $var
-		return True
+		return 1
 
 	else
 		echo $var
-		return False
+		return 0
 
 	fi
 }
@@ -230,11 +230,11 @@ gc_repo(){
 	if local var=$(git gc --aggressive 2>&1)
 	then
 		echo $var
-		return True
+		return 1
 
 	else
 		echo $var
-		return False
+		return 0
 
 	fi
 }
