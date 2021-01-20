@@ -62,13 +62,13 @@ class VersionManager(object):
 
         self.standard_update()
 
-    ## need to build in: 
-    # also what happens if: - do fetch, lose wifi, checkout tag/branch/etc? 
+        # need to build in: 
+        # also what happens if: - do fetch, lose wifi, checkout tag/branch/etc? 
 
-    ## CONNECTIVITY CHECKS, i.e. if wifi or if usb: add usb
+        # CONNECTIVITY CHECKS, i.e. if wifi or if usb: add usb
 
-    ## Simplify what update we look for from now on: Standardize update packages from version x.x.x onwards to look for 
-    # SmartBench-SW-update...zip, and then unpack that to find git repo zips, and then unpack those accordingly. 
+        # Simplify what update we look for from now on: Standardize update packages from version x.x.x onwards to look for 
+        # SmartBench-SW-update...zip, and then unpack that to find git repo zips, and then unpack those accordingly. 
 
 
     ## STANDARD UPDATE PROCEDURE
