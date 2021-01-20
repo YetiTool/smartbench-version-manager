@@ -71,7 +71,6 @@ class VersionManager(object):
         # SmartBench-SW-update...zip, and then unpack that to find git repo zips, and then unpack those accordingly. 
 
 
-    ## STANDARD UPDATE PROCEDURE
     def standard_update(self):
         self.set_remotes()
         self._clone_backup_repos_from_URL() # if wifi available
