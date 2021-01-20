@@ -59,6 +59,13 @@ fetch_tags_for_all_repos(){
 
 }
 
+get_tag_list(){
+
+	go_to_dir $1
+	local var=$(git tag --sort=-refname |head -n 10)
+	echo $var
+}
+
 ### DEBUGGING
 
 fsck_repo(){
@@ -95,7 +102,8 @@ set_up_usb_repo(){
 	fi
 }
 
-
+# set origin URL (just in case)
+# argument 1 is the repo, argument 2 is the origin URL
 set_origin_URL(){
 
 	go_to_dir $1
@@ -129,7 +137,9 @@ current_version(){
 }
 
 
-### CHECKOUT NEW VERSIONS
+### DO UPDATES
+
+## CHECKOUT NEW VERSIONS
 
 # arg 1 is the repo, arg 2 is the version
 checkout_new_version(){
@@ -145,6 +155,20 @@ checkout_new_version(){
 		echo $var
 		return 0
 
+	fi
+}
+
+## PLATFORM ANSIBLE RUN
+do_platform_ansible_run(){
+
+	if local var=$(/home/pi/console-raspi3b-plus-platform/ansible/templates/ansible-start.sh 2>&1)
+	then
+		echo $var
+		return 1
+
+	else
+		echo $var
+		return 1
 	fi
 }
 
