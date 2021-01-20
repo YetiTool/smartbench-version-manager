@@ -39,7 +39,7 @@ def run_in_shell(cmd):
         bool_out = True
     else:
         bool_out = False
- 
+
     return [bool_out, stdout, stderr]
 
 
@@ -68,7 +68,7 @@ class VersionManager(object):
     ## CONNECTIVITY CHECKS, i.e. if wifi or if usb: add usb
 
     ## Simplify what update we look for from now on: Standardize update packages from version x.x.x onwards to look for 
-    # 'SmartBench-SW-update*.zip', and then unpack that to find git repo zips, and then unpack those accordingly. 
+    # SmartBench-SW-update...zip, and then unpack that to find git repo zips, and then unpack those accordingly. 
 
 
     ## STANDARD UPDATE PROCEDURE
