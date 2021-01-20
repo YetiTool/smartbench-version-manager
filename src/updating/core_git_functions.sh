@@ -39,10 +39,10 @@ fetch_tags(){
 	if local var=$(git fetch --all -t 2>&1)
 	then 
 		echo -e $var
-		echo -e \nTrue
+		echo -e $\nTrue
 	else 
 		echo -e $var
-		echo -e \nFalse
+		echo -e $\nFalse
 	fi
 }
 
