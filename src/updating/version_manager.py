@@ -198,9 +198,9 @@ class VersionManager(object):
 
         # need to set the usb remote filepaths
 
-        set_up_platform_repo_outcome = _set_up_usb_repo('platform', usb_remote_path)
-        set_up_easycut_repo_outcome = _set_up_usb_repo('easycut', usb_remote_path)
-        set_up_version_manager_repo_outcome = _set_up_usb_repo('version_manager', usb_remote_path)
+        set_up_platform_repo_outcome = self._set_up_usb_repo('platform', usb_remote_path)
+        set_up_easycut_repo_outcome = self._set_up_usb_repo('easycut', usb_remote_path)
+        set_up_version_manager_repo_outcome = self._set_up_usb_repo('version_manager', usb_remote_path)
 
         platform_origin_outcome = self._set_origin_URL('platform')
         easycut_origin_outcome = self._set_origin_URL('easycut')
