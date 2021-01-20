@@ -438,17 +438,17 @@ class VersionManager(object):
     # set up backups with git clone
     def _clone_backup_repos_from_URL(self):
         self._go_to_dir('home')
-        platform_success = self._clone_backup_repo(platform_origin_url, console-raspi3b-plus-platform-backup)
-        easycut_success = self._clone_backup_repo(easycut_origin_url, easycut-smartbench-backup)
-        version_manager_success = self._clone_backup_repo(version_manager_origin_url, smartbench-version-manager-backup)
+        platform_success = self._clone_backup_repo(platform_origin_url, 'console-raspi3b-plus-platform-backup')
+        easycut_success = self._clone_backup_repo(easycut_origin_url, 'easycut-smartbench-backup')
+        version_manager_success = self._clone_backup_repo(version_manager_origin_url, 'smartbench-version-manager-backup')
 
         return platform_success, easycut_success, version_manager_success
 
     def _clone_backup_repos_from_USB(self):
         self._go_to_dir('home')
-        platform_success = self._clone_backup_repo(platform_usb_remote_bundle, console-raspi3b-plus-platform-backup)
-        easycut_success = self._clone_backup_repo(easycut_usb_remote_bundle, easycut-smartbench-backup)
-        version_manager_success = self._clone_backup_repo(version_manager_usb_remote_bundle, smartbench-version-manager-backup)
+        platform_success = self._clone_backup_repo(platform_usb_remote_bundle, 'console-raspi3b-plus-platform-backup')
+        easycut_success = self._clone_backup_repo(easycut_usb_remote_bundle, 'easycut-smartbench-backup')
+        version_manager_success = self._clone_backup_repo(version_manager_usb_remote_bundle, 'smartbench-version-manager-backup')
 
         return platform_success, easycut_success, version_manager_success
     
