@@ -161,14 +161,13 @@ checkout_new_version(){
 ## PLATFORM ANSIBLE RUN
 do_platform_ansible_run(){
 
-	if local var=$(/home/pi/console-raspi3b-plus-platform/ansible/templates/ansible-start.sh 2>&1)
+	if [ /home/pi/console-raspi3b-plus-platform/ansible/templates/ansible-start.sh ]
 	then
-		echo $var
-		return 1
+		echo 'True'
 
 	else
-		echo $var
-		return 1
+		echo 'False'
+		
 	fi
 }
 
