@@ -1,13 +1,14 @@
 #!/bin/bash
 
 ## series of functions for executing git commands and determining success
-# all functions check success of command, and return 1 or 0 depending on success of execution. 
+# all functions check success of command, and echo True or 0 depending on success of execution. 
 # they also return the output from git, which can be saved as an advanced log/feedback for user
+
+## do things need a newline echoed?? 
 
 ### SYNTAX GUIDE
 
 ## Use variables: platform, easycut, version_manager to specify which repo the function should action in
-
 
 ### REPO PATHS
 
@@ -38,10 +39,10 @@ fetch_tags(){
 	if local var=$(git fetch --all -t 2>&1)
 	then 
 		echo $var
-		return 1
+		echo True
 	else 
 		echo $var
-		return 0
+		echo False
 	fi
 }
 
@@ -75,10 +76,10 @@ fsck_repo(){
 	if local var=$(git fsck --lost-found 2>&1)
 	then 
 		echo $var
-		return 1
+		echo True
 	else 
 		echo $var
-		return 0
+		echo False
 	fi
 }
 
@@ -94,11 +95,11 @@ set_up_usb_repo(){
 	if local var=$(git remote add temp_repository $2)
 	then 
 		echo $var
-		return 1
+		echo True
 
 	else
 		echo $var
-		return 0
+		echo False
 	fi
 }
 
@@ -111,11 +112,11 @@ set_origin_URL(){
 	if local var=$(git remote set-url origin $2)
 	then 
 		echo $var
-		return 1
+		echo True
 
 	else
 		echo $var
-		return 0
+		echo False
 	fi
 }
 
@@ -127,11 +128,11 @@ current_version(){
 	if local var=$(git describe --tags 2>&1)
 	then
 		echo $var
-		return 1
+		echo True
 
 	else
 		echo $var
-		return 0
+		echo False
 
 	fi
 }
@@ -149,11 +150,11 @@ checkout_new_version(){
 	if local var=$(git checkout $2 -f 2>&1)
 	then
 		echo $var
-		return 1
+		echo True
 
 	else
 		echo $var
-		return 0
+		echo False
 
 	fi
 }
@@ -167,7 +168,7 @@ do_platform_ansible_run(){
 
 	else
 		echo 'False'
-		
+
 	fi
 }
 
@@ -180,15 +181,15 @@ clone_backup_repo(){
 	if [ -d $2]
 	then
 		echo "backup directory already exists!"
-		return 0
+		echo False
 	else
 		if local var=$(git clone --bare $1 $2 2>&1)
 		then 
 			echo $var
-			return 1
+			echo True
 		else
 			echo $var
-			return 0
+			echo False
 
 		fi
 	fi
@@ -217,7 +218,7 @@ repair_repo(){
 	if local var=$(git-repair --force 2>&1)
 	then 
 		echo $var
-		return 1
+		echo True
 	else
 		echo $var
 		
@@ -227,17 +228,17 @@ repair_repo(){
 			then 
 				echo $var1
 				echo $var2
-				return 1
+				echo True
 		
 			else
 				echo $var1
 				echo $var2
-				return 0
+				echo False
 		
 			fi
 		else
 			echo $var1
-			return 0
+			echo False
 
 		fi
 	fi
@@ -252,11 +253,11 @@ prune_repo(){
 	if local var=$(git prune 2>&1)
 	then
 		echo $var
-		return 1
+		echo True
 
 	else
 		echo $var
-		return 0
+		echo False
 
 	fi
 }
@@ -269,11 +270,11 @@ gc_repo(){
 	if local var=$(git gc --aggressive 2>&1)
 	then
 		echo $var
-		return 1
+		echo True
 
 	else
 		echo $var
-		return 0
+		echo False
 
 	fi
 }
