@@ -1,6 +1,8 @@
 import csv
 import subprocess, sys, os
 
+from time import sleep
+
 version_matrix_file = './versions/platform-software-matrix.txt'
 
 usb_remote = '/media/usb/'
@@ -58,14 +60,22 @@ class VersionManager(object):
 
         self.sm = screen_manager
 
+        self.standard_update()
+
     ## need to build in: 
-    # - double fetch attempts (as sometimes can just be a dodge connection
     # also what happens if: - do fetch, lose wifi, checkout tag/branch/etc? 
+
+    ## CONNECTIVITY CHECKS, i.e. if wifi or if usb: add usb
+
+    ## Simplify what update we look for from now on: Standardize update packages from version x.x.x onwards to look for 
+    # 'SmartBench-SW-update*.zip', and then unpack that to find git repo zips, and then unpack those accordingly. 
+
 
     ## STANDARD UPDATE PROCEDURE
     def standard_update(self):
         self.set_remotes()
-        self._clone_backup_repos_from_URL()
+        self._clone_backup_repos_from_URL() # if wifi available
+
         if self.prepare_for_update():
             fetch_outcome = self._fetch_tags_for_all_repos()
 
@@ -153,12 +163,6 @@ class VersionManager(object):
 
     ## BETA UPDATES
     # was thinking these for software, but obvs may affect platform as well... how we wanna skin this?? 
-
-
-    ## FACTORY SET-UP FUNCTIONS
-    # hmmm this is mostly the git clone, followed by the standard update... how do we call this specific update from factory? 
-
-    # OR instead if backups don't exist, we just auto set them... 
 
 
     ## CHECK COMPATIBILITY
@@ -269,16 +273,38 @@ class VersionManager(object):
             # send all outcome deets to screen
             return False
 
-    def extreme_repair_procedure(self):
+    def extreme_repair_procedure(self, repo):
 
-        #...best way to do this? 
-        # rename existing dir, so that it becomes '-corrupted' or something
+        bundle_extension = ''
+
+        if repo == 'platform': 
+            path = platform_path
+            origin = platform_origin_url
+            usb_origin = ''
+        elif repo == 'easycut': 
+            path = easycut_path
+            origin = easycut_origin_url
+            usb_origin = ''
+        elif repo == 'version_manager': 
+            path = version_manager_path
+            origin = version_manager_origin_url
+            usb_origin = ''
+
+        # rename existing dir, so that it becomes '-corrupted', which keeps it separate to backup dirs
+        run_in_shell('mv -f ' + path + ' ' + path + '-corrupted')
+
         # then try: 
         #    git clone from URL
         #    git clone from USB repo
         #    git clone from backup repo
 
-        pass
+        clone_from_url_outcome = self._clone_fresh_repo(origin)
+        if not clone_from_url_outcome[0]:
+            clone_from_usb_outcome = self._clone_fresh_repo(usb_origin)
+            if not clone_from_usb_outcome[0]:
+                self._clone_fresh_repo(path + '-backup' + bundle_extension)
+
+
 
 
     ## FETCH TAGS AND CHECKOUT 
@@ -320,7 +346,13 @@ class VersionManager(object):
     def _fetch_tags(self, repo):
         self._go_to_dir(repo)
         # fetch tags from all remotes (including any temporary USB repos)
-        return run_in_shell('git fetch --all -t')
+        # tries twice, just on the off-chance that there's a brief loss of connection or similar
+        success = run_in_shell('git fetch --all -t')
+        if success[0]: 
+            return_success
+        else:
+            sleep(10)
+            run_in_shell('git fetch --all -t')
 
     ## fetch tags for all repositories
 
@@ -388,6 +420,9 @@ class VersionManager(object):
 
 
     ### REPAIR AND BACKUPS
+    def _clone_fresh_repo(self, origin):
+        self._go_to_dir('home')
+        return run_in_shell('git clone ' + origin)
 
     # arguments are origin = git URL (or bundle to clone), target = backup target directory
     def _clone_backup_repo(self, origin, target):
@@ -407,6 +442,13 @@ class VersionManager(object):
 
         return platform_success, easycut_success, version_manager_success
 
+    def _clone_backup_repos_from_URL(self):
+        self._go_to_dir('home')
+        platform_success = self._clone_backup_repo(platform_usb_remote_bundle, console-raspi3b-plus-platform-backup)
+        easycut_success = self._clone_backup_repo(easycut_usb_remote_bundle, easycut-smartbench-backup)
+        version_manager_success = self._clone_backup_repo(version_manager_usb_remote_bundle, smartbench-version-manager-backup)
+
+        return platform_success, easycut_success, version_manager_success
     
     # git-repair
     def _repair_repo(self, repo):
