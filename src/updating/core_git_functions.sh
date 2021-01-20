@@ -35,14 +35,14 @@ fetch_tags(){
 
 	go_to_dir $1
 
-	# fetch tags from all repos (including any temporary USB repos)
+	# fetch tags from all remotes (including any temporary USB repos)
 	if local var=$(git fetch --all -t 2>&1)
 	then 
-		echo $var
-		echo True
+		echo -e $var
+		echo -e \nTrue
 	else 
-		echo $var
-		echo False
+		echo -e $var
+		echo -e \nFalse
 	fi
 }
 
