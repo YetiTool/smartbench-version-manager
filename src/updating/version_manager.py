@@ -251,7 +251,6 @@ class VersionManager(object):
         return True
 
 
-    ## REPAIR FUNCTIONS
 
     def standard_repair_procedure(self, repo):
         # git-repair
