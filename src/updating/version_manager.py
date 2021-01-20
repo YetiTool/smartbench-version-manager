@@ -11,6 +11,10 @@ platform_origin_url = 'https://github.com/YetiTool/console-raspi3b-plus-platform
 easycut_origin_url = 'https://github.com/YetiTool/easycut-smartbench.git'
 version_manager_origin_url = 'https://github.com/YetiTool/smartbench-version-manager.git'
 
+platform_usb_remote_bundle = ''
+easycut_usb_remote_bundle = ''
+version_manager_usb_remote_bundle = ''
+
 os.environ['PYTHONUNBUFFERED'] = "1"
 
 ### SYNTAX GUIDE
@@ -440,7 +444,7 @@ class VersionManager(object):
 
         return platform_success, easycut_success, version_manager_success
 
-    def _clone_backup_repos_from_URL(self):
+    def _clone_backup_repos_from_USB(self):
         self._go_to_dir('home')
         platform_success = self._clone_backup_repo(platform_usb_remote_bundle, console-raspi3b-plus-platform-backup)
         easycut_success = self._clone_backup_repo(easycut_usb_remote_bundle, easycut-smartbench-backup)
