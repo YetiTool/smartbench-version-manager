@@ -111,10 +111,10 @@ class UpdatingScreenClass(Screen):
         print('message in: ' + str(message))
         print('message type: ' + str(type(message)))
 
-        if (type(message) is 'str'):
+        if (type(message) == 'str'):
             self.basic_buffer.append(message)
             print('message appended')
-        if (type(message) is 'list'):
+        if (type(message) == 'list'):
             self.basic_buffer.extend(message)
             print('buffer extended')
 
