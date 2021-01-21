@@ -128,7 +128,7 @@ class UpdatingScreenClass(Screen):
 
     def add_to_user_friendly_buffer(self, *message):
         
-        message_string = str(message)
+        message_string = str(message).strip('()')
         print message_string
         self.basic_buffer.append(message_string)
 

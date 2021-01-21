@@ -91,17 +91,26 @@ Builder.load_string("""
                 padding: [300, 10]
                 spacing: 0
                 orientation: 'horizontal'
+                BoxLayout:
+                    size_hint: (None,None)
+                    width: dp(180)
+                    height: dp(60)
+                    padding: [300, 10]
+                    spacing: 0
+                    orientation: 'horizontal'
+                        canvas:
+                            Color:
+                                rgba: hex('#1976d2ff')
+                            RoundedRectangle:
+                                pos: self.pos
+                                size: self.size
 
-                Button:
-                    canvas:
-                        Color:
-                            rgba: hex('#1976d2ff')
-                        RoundedRectangle:
-                            pos: self.pos
-                            size: self.size
-                    text: 'Back to basic screen'
-                    color: hex('#f9f9f9ff')
-                    on_press: root.go_back()
+                    Button:
+                        text: 'Back to basic screen'
+                        color: hex('#f9f9f9ff')
+                        on_press: root.go_back()
+                        background_normal: ''
+                        background_colour: [1,1,1,0]
 
 
 """)
@@ -123,7 +132,7 @@ class MoreDetailsScreenClass(Screen):
 
     def add_to_verbose_buffer(self, *message):
 
-        message_string = str(message)
+        message_string = str(message).strip('()')
         print message_string
         self.verbose_buffer.append(message_string)
 
