@@ -108,15 +108,7 @@ class UpdatingScreenClass(Screen):
 
     def add_to_user_friendly_buffer(self, message):
 
-        print('message in: ' + str(message))
-        print('message type: ' + str(type(message)))
-
-        if (type(message) == 'str'):
-            self.basic_buffer.append(message)
-            print('message appended')
-        if (type(message) == 'list'):
-            self.basic_buffer.extend(message)
-            print('buffer extended')
+        self.basic_buffer.append(str(message))
 
     # def update_user_friendly_display(self, dt):
         self.user_friendly_output.text = '\n'.join(self.basic_buffer)
