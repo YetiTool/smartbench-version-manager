@@ -11,6 +11,7 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.scrollview import ScrollView
 from kivy.properties import StringProperty
 from kivy.clock import Clock
+from kivy.graphics import RoundedRectangle, Color
 
 Builder.load_string("""
 

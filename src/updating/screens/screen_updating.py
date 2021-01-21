@@ -11,6 +11,7 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.scrollview import ScrollView
 from kivy.properties import StringProperty
 from kivy.clock import Clock
+from kivy.graphics import RoundedRectangle, Color
 
 Builder.load_string("""
 
@@ -34,6 +35,21 @@ Builder.load_string("""
         font_size: 20
         max_lines: 100
         color: hex('#333333ff')
+        markup: True
+
+<ButtonWithCanvas>
+
+    canvas:
+        Color:
+            rgba: hex('#1976d2ff')
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+
+    Button:
+        color: hex('#f9f9f9ff')
+        markup: True
+
 
 <UpdatingScreenClass>
 
@@ -92,15 +108,8 @@ Builder.load_string("""
                 spacing: 0
                 orientation: 'horizontal'
 
-                Button:
-                    canvas:
-                        Color:
-                            rgba: hex('#1976d2ff')
-                        RoundedRectangle:
-                            pos: self.pos
-                            size: self.size
+                ButtonWithCanvas
                     text: 'Check Details'
-                    color: hex('#f9f9f9ff')
                     on_press: root.check_details()
 
 
@@ -127,9 +136,7 @@ class UpdatingScreenClass(Screen):
             Clock.schedule_once(lambda dt: self.vm.standard_update(), 5)
 
     def add_to_user_friendly_buffer(self, *message):
-        
-        message_string = str(message).strip('()')
-        print message_string
+
         self.basic_buffer.append(message_string)
 
     # def update_user_friendly_display(self, dt):
