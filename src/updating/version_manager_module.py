@@ -94,7 +94,8 @@ class VersionManager(object):
 
     def outcome_to_screens(self, *args):
         # initial debug test
-        self.sm.get_screen('updating').add_to_user_friendly_buffer(args)
+        for arg in *args:
+            self.sm.get_screen('updating').add_to_user_friendly_buffer(str(arg))
 
     def check_connections(self):
         # Keep tabs on wifi connection
