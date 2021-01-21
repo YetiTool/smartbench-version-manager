@@ -477,6 +477,8 @@ class VersionManager(object):
 
         return platform_success, easycut_success, version_manager_success
     
+    # need a create bundles section, and then a clone from bundles section
+
     # git-repair
     def _repair_repo(self, repo):
         self._go_to_dir(repo)

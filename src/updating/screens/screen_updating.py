@@ -107,10 +107,16 @@ class UpdatingScreenClass(Screen):
             Clock.schedule_once(lambda dt: self.vm.standard_update(), 5)
 
     def add_to_user_friendly_buffer(self, message):
-        if type(message) is 'str':
+
+        print('message in: ' + message)
+        print('message type: ' + type(message))
+
+        if (type(message) is 'str'):
             self.basic_buffer.append(message)
-        if type(message) is 'list':
+            print('message appended')
+        if (type(message) is 'list'):
             self.basic_buffer.extend(message)
+            print('buffer extended')
 
     # def update_user_friendly_display(self, dt):
         self.user_friendly_output.text = '\n'.join(self.basic_buffer)
