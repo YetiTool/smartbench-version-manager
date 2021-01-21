@@ -41,7 +41,7 @@ Builder.load_string("""
 
 <ButtonWithCanvas>
 
-    canvas:
+    canvas.before:
         Color:
             rgba: hex('#1976d2ff')
         RoundedRectangle:
@@ -142,7 +142,7 @@ class UpdatingScreenClass(Screen):
 
     def add_to_user_friendly_buffer(self, *message):
 
-        self.basic_buffer.append(message_string)
+        self.basic_buffer.append(message)
 
     # def update_user_friendly_display(self, dt):
         self.user_friendly_output.text = '\n'.join(self.basic_buffer)
