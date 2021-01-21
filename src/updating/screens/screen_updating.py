@@ -76,13 +76,33 @@ Builder.load_string("""
             BoxLayout:
                 size_hint: (None,None)
                 width: dp(780)
-                height: dp(400)
-                padding: 20
+                height: dp(340)
+                padding: 10
                 spacing: 0
                 orientation: 'horizontal'
 
                 ScrollableBasicOutput:
                     id: user_friendly_output
+
+            BoxLayout:
+                size_hint: (None,None)
+                width: dp(780)
+                height: dp(60)
+                padding: [300, 20]
+                spacing: 0
+                orientation: 'horizontal'
+
+                Button:
+                    canvas.before:
+                        Color:
+                            rgba: hex('#1976d2ff')
+                        RoundedRectangle:
+                            pos: self.pos
+                            size: self.size
+                    text: 'Check Details'
+                    color: hex('#f9f9f9ff')
+                    on_press: root.check_details()
+
 
 
 """)
@@ -115,6 +135,9 @@ class UpdatingScreenClass(Screen):
         self.user_friendly_output.text = '\n'.join(self.basic_buffer)
         if len(self.basic_buffer) > 100:
             del self.basic_buffer[0:len(self.basic_buffer)-100]
+
+    def check_details(self):
+        self.sm.current = 'more_details'
 
 
 

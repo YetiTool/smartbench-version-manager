@@ -3,9 +3,12 @@ import subprocess, sys, os
 
 from time import sleep
 
+from updating import usb_storage
+
 version_matrix_file = './versions/platform-software-matrix.txt'
 
 usb_remote_path = '/media/usb/'
+remote_cache = './remoteCache/'
 
 platform_origin_url = 'https://github.com/YetiTool/console-raspi3b-plus-platform.git'
 easycut_origin_url = 'https://github.com/YetiTool/easycut-smartbench.git'
@@ -30,22 +33,6 @@ easycut_path = home_dir + "easycut-smartbench/"
 platform_path = home_dir + "console-raspi3b-plus-platform/"
 version_manager_path = home_dir + "smartbench-version-manager/"
 
-def run_in_shell(cmd):
-    proc = subprocess.Popen(cmd,
-        stdout = subprocess.PIPE,
-        stderr = subprocess.STDOUT,
-        shell = True
-    )
-
-    stdout, stderr = proc.communicate()
-
-    if int(proc.returncode) == 0:
-        bool_out = True
-    else:
-        bool_out = False
-
-    return [bool_out, stdout, stderr]
-
 
 class VersionManager(object):
 
@@ -64,6 +51,9 @@ class VersionManager(object):
 
         self.sm = screen_manager
 
+        self.usb_stick = usb_storage.USB_storage(self.sm)
+        self.usb_stick.enable()
+
         # need to build in: 
         # also what happens if: - do fetch, lose wifi, checkout tag/branch/etc? 
 
@@ -72,10 +62,48 @@ class VersionManager(object):
         # Simplify what update we look for from now on: Standardize update packages from version x.x.x onwards to look for 
         # SmartBench-SW-update...zip, and then unpack that to find git repo zips, and then unpack those accordingly. 
 
+    def run_in_shell(repo, cmd):
+
+        if repo == 'platform': dir_path = platform_path
+        elif repo == 'easycut': dir_path = easycut_path
+        elif repo == 'version_manager': dir_path = version_manager_path
+        elif repo == 'home': dir_path = home_dir
+
+        full_cmd = 'cd ' + dir_path + ' && ' + cmd
+
+        self.sm.get_screen('more_details').add_to_verbose_buffer('Send: ', full_cmd)
+
+        proc = subprocess.Popen(full_cmd,
+            stdout = subprocess.PIPE,
+            stderr = subprocess.STDOUT,
+            shell = True
+        )
+
+        stdout, stderr = proc.communicate()
+        exit_code = int(proc.returncode)
+
+        self.sm.get_screen('more_details').add_to_verbose_buffer('Receive: ', exit_code, stdout, stderr)
+
+        if exit_code == 0:
+            bool_out = True
+        else:
+            bool_out = False
+
+        return [bool_out, stdout, stderr]
+
+
     def outcome_to_screens(self, *args):
         # initial debug test
         self.sm.get_screen('updating').add_to_user_friendly_buffer(*args)
 
+    def check_connections(self):
+        # Keep tabs on wifi connection
+        self.check_wifi_connection(1)
+        # self.poll_wifi = Clock.schedule_interval(self.check_wifi_connection, self.WIFI_CHECK_INTERVAL)
+
+        # Set up and keep tabs on usb connection
+        self.check_USB_status(1)
+        # self.poll_USB = Clock.schedule_interval(self.check_USB_status, 0.25)
 
 
     def standard_update(self):
@@ -273,8 +301,6 @@ class VersionManager(object):
 
         return True
 
-
-
     def standard_repair_procedure(self, repo):
         # git-repair
         repair_outcome = self._repair_repo(repo)
@@ -312,7 +338,7 @@ class VersionManager(object):
             usb_origin = ''
 
         # rename existing dir, so that it becomes '-corrupted', which keeps it separate to backup dirs
-        run_in_shell('mv -f ' + path + ' ' + path + '-corrupted')
+        self.run_in_shell('home', 'mv -f ' + path + ' ' + path + '-corrupted')
 
         # then try: 
         #    git clone from URL
@@ -352,28 +378,27 @@ class VersionManager(object):
     def _go_to_dir(self, repo):
 
         if repo == 'platform':
-            run_in_shell('cd ' + platform_path)
+            self.run_in_shell('cd ' + platform_path)
         elif repo == 'easycut':
-            run_in_shell('cd ' + easycut_path)
+            self.run_in_shell('cd ' + easycut_path)
         elif repo == 'version_manager':
-            run_in_shell('cd ' + version_manager_path)
+            self.run_in_shell('cd ' + version_manager_path)
         elif repo == 'home':
-            run_in_shell('cd ' + home_dir)            
+            self.run_in_shell('cd ' + home_dir)            
 
     ### FETCH
 
     ## fetch tags  
 
     def _fetch_tags(self, repo):
-        self._go_to_dir(repo)
         # fetch tags from all remotes (including any temporary USB repos)
         # tries twice, just on the off-chance that there's a brief loss of connection or similar
-        success = run_in_shell('git fetch --all -t')
+        success = self.run_in_shell(repo, 'git fetch --all -t')
         if success[0]: 
             return_success
         else:
             sleep(10)
-            run_in_shell('git fetch --all -t')
+            self.run_in_shell(repo, 'git fetch --all -t')
 
     ## fetch tags for all repositories
 
@@ -388,16 +413,14 @@ class VersionManager(object):
     ## return list of 10 most recent tags
 
     def _get_tag_list(self, repo):
-        self._go_to_dir(repo)
-        return run_in_shell('git tag --sort=-refname |head -n 10')
+        return self.run_in_shell(repo, 'git tag --sort=-refname |head -n 10')
 
     ### DEBUGGING
 
     ## get fsck output
 
     def _fsck_repo(self, repo):
-        self._go_to_dir(repo)
-        return run_in_shell('git fsck --lost-found')
+        return self.run_in_shell(repo, 'git fsck --lost-found')
 
     ### PREPATORY COMMANDS
 
@@ -405,8 +428,7 @@ class VersionManager(object):
     # arguments: argument 1 is the repo we're setting up for, argument 2 is the usb filepath
 
     def _set_up_usb_repo(self, repo, usb_remote_path):
-        self._go_to_dir(repo)
-        return run_in_shell('git remote add temp_repository ' + usb_remote_path)
+        return self.run_in_shell(repo, 'git remote add temp_repository ' + usb_remote_path)
 
     # set origin URL (just in case)
     def _set_origin_URL(self, repo):
@@ -418,56 +440,47 @@ class VersionManager(object):
         elif repo == 'version_manager':
             origin_url = version_manager_origin_url
 
-        self._go_to_dir(repo)
-        return run_in_shell('git remote set-url origin ' + origin_url)
+        return self.run_in_shell(repo, 'git remote set-url origin ' + origin_url)
 
     # describe current tag
     def _current_version(self, repo):
-        self._go_to_dir(repo)
-        return run_in_shell('git describe --tags')       
+        return self.run_in_shell(repo, 'git describe --tags')       
 
 
     ### DO UPDATES
 
     ## CHECKOUT NEW VERSIONS
     def _checkout_new_version(self, repo, version):
-        self._go_to_dir(repo)
-        return run_in_shell('git checkout ' + version + ' -f')  
+        return self.run_in_shell(repo, 'git checkout ' + version + ' -f')  
 
 
     ## PLATFORM ANSIBLE RUN
     def _do_platform_ansible_run(self):
-        return run_in_shell('/home/pi/console-raspi3b-plus-platform/ansible/templates/ansible-start.sh')
+        return self.run_in_shell('/home/pi/console-raspi3b-plus-platform/ansible/templates/ansible-start.sh')
 
 
     ### REPAIR AND BACKUPS
     def _clone_fresh_repo(self, origin):
-        self._go_to_dir('home')
-        return run_in_shell('git clone ' + origin)
+        return self.run_in_shell('home', 'git clone ' + origin)
 
     # arguments are origin = git URL (or bundle to clone), target = backup target directory
     def _clone_backup_repo(self, origin, target):
-        self._go_to_dir('home')
-        print_cd = run_in_shell('pwd')
-        print(print_cd)
         if os.path.exists(home_dir + target):
             self.outcome_to_screens('backup repo ' + target + ' already exists')
             return True
         else:
-            self.outcome_to_screens('Creating backup repository in ' + target)
-            outcome = run_in_shell('git clone --bare ' + origin + ' ' + home_dir + target)
+            self.outcome_to_screens('Creating backup repository in ' + target + '...')
+            outcome = self.run_in_shell('home', 'git clone --bare ' + origin + ' ' + home_dir + target)
 
             if outcome[0]: 
-                self.outcome_to_screens('Backup repository ' + target + ' created successfully')
+                self.outcome_to_screens('\tBackup repository ' + target + ' created successfully')
             else:
-                self.outcome_to_screens('Backup repository could not be created. Check details for more information.')
+                self.outcome_to_screens('\tBackup repository could not be created. Check details for more information.')
 
-            self.outcome_to_screens(outcome) # will probably want to put this into the verbose screen
             return outcome[0]
 
     # set up backups with git clone
     def _clone_backup_repos_from_URL(self):
-        self._go_to_dir('home')
         platform_success = self._clone_backup_repo(platform_origin_url, 'console-raspi3b-plus-platform-backup')
         easycut_success = self._clone_backup_repo(easycut_origin_url, 'easycut-smartbench-backup')
         version_manager_success = self._clone_backup_repo(version_manager_origin_url, 'smartbench-version-manager-backup')
@@ -475,7 +488,6 @@ class VersionManager(object):
         return platform_success, easycut_success, version_manager_success
 
     def _clone_backup_repos_from_USB(self):
-        self._go_to_dir('home')
         platform_success = self._clone_backup_repo(platform_usb_remote_bundle, 'console-raspi3b-plus-platform-backup')
         easycut_success = self._clone_backup_repo(easycut_usb_remote_bundle, 'easycut-smartbench-backup')
         version_manager_success = self._clone_backup_repo(version_manager_usb_remote_bundle, 'smartbench-version-manager-backup')
@@ -486,12 +498,11 @@ class VersionManager(object):
 
     # git-repair
     def _repair_repo(self, repo):
-        self._go_to_dir(repo)
-        initial_run_success = run_in_shell('git-repair --force')
+        initial_run_success = self.run_in_shell(repo, 'git-repair --force')
         if initial_run_success[0] != 0:
-            install_success = run_in_shell('sudo aptitude install git-repair')
+            install_success = self.run_in_shell(repo, 'sudo aptitude install git-repair')
             if install_success[0] == 0:
-                return run_in_shell('git-repair --force')
+                return self.run_in_shell(repo, 'git-repair --force')
             else:
                 return install_success
         else:
@@ -499,12 +510,34 @@ class VersionManager(object):
 
     # git prune
     def _prune_repo(self, repo):
-        self._go_to_dir(repo)
-        return run_in_shell('git prune')
+        return self.run_in_shell(repo, 'git prune')
 
     # git gc --aggressive
     def _gc_repo(self, repo):
-        self._go_to_dir(repo)
-        return run_in_shell('git gc --aggressive')
+        return self.run_in_shell(repo, 'git gc --aggressive')
 
+# -----------------------------------------------------------------------------------------------
+# CONNECTIONS TO REMOTES
+# -----------------------------------------------------------------------------------------------
 
+    def check_wifi_connection(self):
+
+        try:
+            f = os.popen('hostname -I')
+            first_info = f.read().strip().split(' ')[0]
+            if len(first_info.split('.')) == 4:
+                return True
+            else:
+                return False
+
+        except:
+            return False
+
+    def check_USB_path(self):
+
+        if self.usb_stick.is_available():
+            # if os.path.exists():
+            #     return True
+            pass
+        else:
+            return False

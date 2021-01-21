@@ -19,7 +19,7 @@ from kivy.core.window import Window
 
 from updating import version_manager_module
 
-from updating.screens import screen_updating
+from updating.screens import screen_updating, screen_more_details
 
 class SBVersionManagerUI(App):
 
@@ -29,7 +29,9 @@ class SBVersionManagerUI(App):
         vm = version_manager_module.VersionManager(sm)
 
         updating_screen = screen_updating.UpdatingScreenClass(name = 'updating', screen_manager = sm, version_manager = vm)
+        more_details_screen = screen_more_details.MoreDetailsScreenClass(name = 'more_details', screen_manager = sm, version_manager = vm)
         sm.add_widget(updating_screen)
+        sm.add_widget(more_details_screen)
 
         sm.current = 'updating'
 
