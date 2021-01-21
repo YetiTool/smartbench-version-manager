@@ -76,7 +76,7 @@ Builder.load_string("""
             BoxLayout:
                 size_hint: (None,None)
                 width: dp(780)
-                height: dp(300)
+                height: dp(320)
                 padding: 10
                 spacing: 0
                 orientation: 'horizontal'
@@ -128,9 +128,9 @@ class UpdatingScreenClass(Screen):
 
     def add_to_user_friendly_buffer(self, *message):
         
-        message_string = ' '.join(list(message))
+        message_string = str(message)
         print message_string
-        self.basic_buffer.append(str(message_string))
+        self.basic_buffer.append(message_string)
 
     # def update_user_friendly_display(self, dt):
         self.user_friendly_output.text = '\n'.join(self.basic_buffer)

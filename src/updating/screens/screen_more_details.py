@@ -76,12 +76,12 @@ Builder.load_string("""
             BoxLayout:
                 size_hint: (None,None)
                 width: dp(780)
-                height: dp(340)
+                height: dp(320)
                 padding: 20
                 spacing: 0
                 orientation: 'horizontal'
 
-                ScrollableBasicOutput:
+                ScrollableVerboseOutput:
                     id: verbose_ouput
 
             BoxLayout:
@@ -123,7 +123,7 @@ class MoreDetailsScreenClass(Screen):
 
     def add_to_verbose_buffer(self, *message):
 
-        message_string = ' '.join(list(message))
+        message_string = str(message)
         print message_string
         self.verbose_buffer.append(message_string)
 
