@@ -94,7 +94,7 @@ class VersionManager(object):
 
     def outcome_to_screens(self, *args):
         # initial debug test
-        for arg in *args:
+        for arg in args:
             self.sm.get_screen('updating').add_to_user_friendly_buffer(str(arg))
 
     def check_connections(self):
