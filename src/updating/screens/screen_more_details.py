@@ -123,7 +123,7 @@ class MoreDetailsScreenClass(Screen):
 
     def add_to_verbose_buffer(self, *message):
 
-        message_string = ' '.join(list(*message))
+        message_string = ' '.join(list(message))
         print message_string
         self.verbose_buffer.append(message_string)
 
