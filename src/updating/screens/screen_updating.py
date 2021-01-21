@@ -104,7 +104,7 @@ class UpdatingScreenClass(Screen):
 
     def on_enter(self):
         if sys.platform != 'win32' and sys.platform != 'darwin':
-            Clock.schedule_once(lambda dt: self.vm.standard_update(), 30)
+            Clock.schedule_once(lambda dt: self.vm.standard_update(), 5)
 
     def add_to_user_friendly_buffer(self, message):
         if type(message) is 'str':
