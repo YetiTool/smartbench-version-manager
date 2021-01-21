@@ -98,20 +98,19 @@ Builder.load_string("""
                     padding: [300, 10]
                     spacing: 0
                     orientation: 'horizontal'
-                        canvas:
-                            Color:
-                                rgba: hex('#1976d2ff')
-                            RoundedRectangle:
-                                pos: self.pos
-                                size: self.size
+                    canvas:
+                        Color:
+                            rgba: hex('#1976d2ff')
+                        RoundedRectangle:
+                            pos: self.pos
+                            size: self.size
 
                     Button:
                         text: 'Back to basic screen'
                         color: hex('#f9f9f9ff')
                         on_press: root.go_back()
                         background_normal: ''
-                        background_colour: [1,1,1,0]
-
+                        background_color: [1,1,1,0]
 
 """)
 
