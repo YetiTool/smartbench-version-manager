@@ -12,6 +12,8 @@ from kivy.uix.scrollview import ScrollView
 from kivy.properties import StringProperty
 from kivy.clock import Clock
 from kivy.graphics import RoundedRectangle, Color
+from kivy.uix.button import ButtonBehavior
+from kivy.uix.label import Label
 
 Builder.load_string("""
 
@@ -117,6 +119,9 @@ Builder.load_string("""
 """)
 
 class ScrollableBasicOutput(ScrollView):
+    text = StringProperty('')
+
+class ButtonWithCanvas(ButtonBehavior, Label):
     text = StringProperty('')
 
 class UpdatingScreenClass(Screen):
