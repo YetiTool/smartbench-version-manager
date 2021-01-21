@@ -108,6 +108,7 @@ class UpdatingScreenClass(Screen):
 
     def add_to_user_friendly_buffer(self, message):
 
+        print(str(message))
         self.basic_buffer.append(str(message))
 
     # def update_user_friendly_display(self, dt):

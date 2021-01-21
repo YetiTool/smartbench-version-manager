@@ -447,17 +447,20 @@ class VersionManager(object):
 
     # arguments are origin = git URL (or bundle to clone), target = backup target directory
     def _clone_backup_repo(self, origin, target):
-        self.outcome_to_screens('setting up backup repos')
         self._go_to_dir('home')
-        if run_in_shell('[ -d "' + target + '" ]')[0]:
+        if os.path.exists(home_dir + target)
             self.outcome_to_screens('backup repo ' + target + ' already exists')
-            return
+            return True
         else:
-            self.outcome_to_screens('cloning ' + target)
+            self.outcome_to_screens('Creating backup repository in ' + target)
             outcome = run_in_shell('git clone --bare ' + origin + ' ' + target)
-            print 'outcome type'
-            print type(outcome)
-            self.outcome_to_screens(outcome)
+
+            if outcome[0]: 
+                self.outcome_to_screens('Backup repository ' + target + ' created successfully')
+            else:
+                self.outcome_to_screens('Backup repository could not be created. Check details for more information.')
+
+            self.outcome_to_screens(outcome) # will probably want to put this into the verbose screen
             return outcome[0]
 
     # set up backups with git clone
