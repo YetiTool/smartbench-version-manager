@@ -89,7 +89,7 @@ class VersionManager(object):
         else:
             bool_out = False
 
-        return [bool_out, stdout, stderr]
+        return [str(bool_out), (stdout), (stderr)]
 
 
     def outcome_to_screens(self, *args):
