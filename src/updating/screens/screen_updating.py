@@ -100,7 +100,7 @@ class UpdatingScreenClass(Screen):
         self.sm = kwargs['screen_manager']
         self.vm = kwargs['version_manager']
 
-        Clock.schedule_interval(self.update_user_friendly_display, 2) 
+        # Clock.schedule_interval(self.update_user_friendly_display, 2) 
 
     def on_enter(self):
         if sys.platform != 'win32' and sys.platform != 'darwin':
@@ -112,7 +112,7 @@ class UpdatingScreenClass(Screen):
         if type(message) is 'list':
             self.basic_buffer.extend(message)
 
-    def update_user_friendly_display(self, dt):
+    # def update_user_friendly_display(self, dt):
         self.user_friendly_output.text = '\n'.join(self.basic_buffer)
         if len(self.basic_buffer) > 100:
             del self.basic_buffer[0:len(self.basic_buffer)-100]
