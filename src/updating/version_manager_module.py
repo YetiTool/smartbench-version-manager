@@ -39,9 +39,6 @@ def run_in_shell(cmd):
 
     stdout, stderr = proc.communicate()
 
-    # initial debug test
-    self.sm.get_screen('updating').add_to_user_friendly_buffer(stdout)
-
     if int(proc.returncode) == 0:
         bool_out = True
     else:
@@ -75,6 +72,11 @@ class VersionManager(object):
         # Simplify what update we look for from now on: Standardize update packages from version x.x.x onwards to look for 
         # SmartBench-SW-update...zip, and then unpack that to find git repo zips, and then unpack those accordingly. 
 
+    def outcome_to_screens(self, *args):
+        # initial debug test
+        self.sm.get_screen('updating').add_to_user_friendly_buffer(*args)
+
+
 
     def standard_update(self):
         self.set_remotes()
@@ -82,6 +84,8 @@ class VersionManager(object):
 
         if self.prepare_for_update():
             fetch_outcome = self._fetch_tags_for_all_repos()
+
+            self.outcome_to_screens(fetch_outcome[1:])
 
             if fetch_outcome[0]:
 
@@ -109,6 +113,9 @@ class VersionManager(object):
                                 # do ansible run, and hopefully do cursory check that it worked??
                                 # need to test behaviour of this with & without wifi
                                 ansible_outcome = self._do_platform_ansible_run()
+
+                                self.outcome_to_screens(ansible_outcome[1])
+
                                 if ansible_outcome[0]: 
                                     return True
 
@@ -119,6 +126,7 @@ class VersionManager(object):
 
                             else:
                                 platform_to_checkout = self._find_compatible_platform(self.current_easycut_version)
+                                self.outcome_to_screens(platform_to_checkout)
                                 if self._do_checkout_and_check(self, 'platform', platform_to_checkout):
                                     if self.compatibility_check(self.current_platform_version, self.current_easycut_version):
                                         ansible_outcome = self._do_platform_ansible_run()
