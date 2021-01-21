@@ -100,10 +100,11 @@ class UpdatingScreenClass(Screen):
         self.sm = kwargs['screen_manager']
         self.vm = kwargs['version_manager']
 
-        Clock.schedule_interval(self.update_user_friendly_display, 0.5) 
+        Clock.schedule_interval(self.update_user_friendly_display, 2) 
 
+    def on_enter(self):
         if sys.platform != 'win32' and sys.platform != 'darwin':
-            self.vm.standard_update()
+            Clock.schedule_once(lambda dt: self.vm.standard_update(), 30)
 
     def add_to_user_friendly_buffer(self, message):
         self.basic_buffer.append(message)
