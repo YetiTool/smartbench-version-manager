@@ -10,6 +10,10 @@ version_matrix_file = './versions/platform-software-matrix.txt'
 usb_remote_path = '/media/usb/'
 remote_cache = './remoteCache/'
 
+remote_cache_platform = remote_cache + "console-raspi3b-plus-platform/"
+remote_cache_easycut = remote_cache + "easycut-smartbench/"
+remote_cache_version_manager = remote_cache + "smartbench-version-manager/"
+
 platform_origin_url = 'https://github.com/YetiTool/console-raspi3b-plus-platform.git'
 easycut_origin_url = 'https://github.com/YetiTool/easycut-smartbench.git'
 version_manager_origin_url = 'https://github.com/YetiTool/smartbench-version-manager.git'
@@ -34,6 +38,8 @@ platform_path = home_dir + "console-raspi3b-plus-platform/"
 version_manager_path = home_dir + "smartbench-version-manager/"
 
 
+
+
 class VersionManager(object):
 
     current_platform_version = ''
@@ -47,11 +53,13 @@ class VersionManager(object):
     latest_version_manager_version = ''
     latest_version_manager_beta = ''
 
+    use_usb_remote = False
+
     def __init__(self, screen_manager):
 
         self.sm = screen_manager
 
-        self.usb_stick = usb_storage.USB_storage(self.sm)
+        self.usb_stick = usb_storage.USB_storage(self.sm, self)
         self.usb_stick.enable()
 
         # need to build in: 

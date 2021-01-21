@@ -15,6 +15,14 @@ WARNINGS:
 from kivy.clock import Clock
 import sys, os
 
+
+usb_remote_path = '/media/usb/'
+remote_cache = './remoteCache/'
+
+remote_cache_platform = remote_cache + "console-raspi3b-plus-platform/"
+remote_cache_easycut = remote_cache + "easycut-smartbench/"
+remote_cache_version_manager = remote_cache + "smartbench-version-manager/"
+
 class USB_storage(object):
     
     # Default paths
@@ -32,9 +40,10 @@ class USB_storage(object):
  
     alphabet_string = 'abcdefghijklmnopqrstuvwxyz'
  
-    def __init__(self, screen_manager):
+    def __init__(self, screen_manager, version_manager):
         
         self.sm = screen_manager
+        self.vm = version_manager
 
         if sys.platform == "win32":
             self.usb_path = self.windows_usb_path
@@ -183,5 +192,13 @@ class USB_storage(object):
             os.system(unzip_dir_command) # replace these with run_in_shell function for better processing
 
             # find all the repos in the remoteCache path and if they are there, return true, OR set flag in vm.
+            if (os.path.exists(remote_cache_platform) and
+                os.path.exists(remote_cache_easycut) and
+                os.path.exists(remote_cache_version_manager)):
+                self.vm.use_usb_remote =  True
+
+            else:
+                self.vm.use_usb_remote =  False
+
         except:
-            return False
+            self.vm.use_usb_remote =  False
