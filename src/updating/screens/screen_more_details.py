@@ -12,6 +12,8 @@ from kivy.uix.scrollview import ScrollView
 from kivy.properties import StringProperty
 from kivy.clock import Clock
 from kivy.graphics import RoundedRectangle, Color
+from kivy.uix.button import ButtonBehavior
+from kivy.uix.label import Label
 
 Builder.load_string("""
 
@@ -35,6 +37,15 @@ Builder.load_string("""
         font_size: 20
         max_lines: 100
         color: hex('#333333ff')
+
+<ButtonMWithCanvas>
+
+    canvas.before:
+        Color:
+            rgba: hex('#1976d2ff')
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
 
 <MoreDetailsScreenClass>
 
@@ -92,30 +103,18 @@ Builder.load_string("""
                 padding: [300, 10]
                 spacing: 0
                 orientation: 'horizontal'
-                BoxLayout:
-                    size_hint: (None,None)
-                    width: dp(180)
-                    height: dp(60)
-                    padding: [300, 10]
-                    spacing: 0
-                    orientation: 'horizontal'
-                    canvas:
-                        Color:
-                            rgba: hex('#1976d2ff')
-                        RoundedRectangle:
-                            pos: self.pos
-                            size: self.size
 
-                    Button:
-                        text: 'Back to basic screen'
-                        color: hex('#f9f9f9ff')
-                        on_press: root.go_back()
-                        background_normal: ''
-                        background_color: [1,1,1,0]
+                ButtonMWithCanvas
+                    text: 'Back to basic screen'
+                    color: hex('#f9f9f9ff')
+                    on_press: root.go_back()
 
 """)
 
 class ScrollableVerboseOutput(ScrollView):
+    text = StringProperty('')
+
+class ButtonMWithCanvas(ButtonBehavior, Label):
     text = StringProperty('')
 
 class MoreDetailsScreenClass(Screen):

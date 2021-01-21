@@ -39,7 +39,7 @@ Builder.load_string("""
         color: hex('#333333ff')
         markup: True
 
-<ButtonWithCanvas>
+<ButtonUWithCanvas>
 
     canvas.before:
         Color:
@@ -47,10 +47,6 @@ Builder.load_string("""
         RoundedRectangle:
             pos: self.pos
             size: self.size
-
-    Button:
-        color: hex('#f9f9f9ff')
-        markup: True
 
 
 <UpdatingScreenClass>
@@ -110,9 +106,10 @@ Builder.load_string("""
                 spacing: 0
                 orientation: 'horizontal'
 
-                ButtonWithCanvas
+                ButtonUWithCanvas
                     text: 'Check Details'
                     on_press: root.check_details()
+                    color: hex('#f9f9f9ff')
 
 
 
@@ -121,7 +118,7 @@ Builder.load_string("""
 class ScrollableBasicOutput(ScrollView):
     text = StringProperty('')
 
-class ButtonWithCanvas(ButtonBehavior, Label):
+class ButtonUWithCanvas(ButtonBehavior, Label):
     text = StringProperty('')
 
 class UpdatingScreenClass(Screen):
@@ -142,7 +139,7 @@ class UpdatingScreenClass(Screen):
 
     def add_to_user_friendly_buffer(self, *message):
 
-        self.basic_buffer.append(message)
+        self.basic_buffer.append(str(message))
 
     # def update_user_friendly_display(self, dt):
         self.user_friendly_output.text = '\n'.join(self.basic_buffer)
