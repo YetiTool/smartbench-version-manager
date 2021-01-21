@@ -448,12 +448,14 @@ class VersionManager(object):
     # arguments are origin = git URL (or bundle to clone), target = backup target directory
     def _clone_backup_repo(self, origin, target):
         self._go_to_dir('home')
+        print_cd = run_in_shell('pwd')
+        print(print_cd)
         if os.path.exists(home_dir + target):
             self.outcome_to_screens('backup repo ' + target + ' already exists')
             return True
         else:
             self.outcome_to_screens('Creating backup repository in ' + target)
-            outcome = run_in_shell('git clone --bare ' + origin + ' ' + target)
+            outcome = run_in_shell('git clone --bare ' + origin + ' ' + home_dir + target)
 
             if outcome[0]: 
                 self.outcome_to_screens('Backup repository ' + target + ' created successfully')
