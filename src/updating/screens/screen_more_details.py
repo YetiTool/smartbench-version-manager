@@ -123,8 +123,9 @@ class MoreDetailsScreenClass(Screen):
 
     def add_to_verbose_buffer(self, *message):
 
-        print(str(*message))
-        self.verbose_buffer.append(str(*message))
+        message_string = ' '.join(list(*message))
+        print message_string
+        self.verbose_buffer.append(message_string)
 
     # def update_user_friendly_display(self, dt):
         self.verbose_ouput.text = '\n'.join(self.verbose_buffer)
