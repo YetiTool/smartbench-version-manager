@@ -71,7 +71,7 @@ class VersionManager(object):
 
         full_cmd = 'cd ' + dir_path + ' && ' + cmd
 
-        self.sm.get_screen('more_details').add_to_verbose_buffer('Send: ' + full_cmd)
+        self.sm.get_screen('more_details').add_to_verbose_buffer('Send: ' + str(full_cmd))
 
         proc = subprocess.Popen(full_cmd,
             stdout = subprocess.PIPE,
@@ -82,7 +82,7 @@ class VersionManager(object):
         stdout, stderr = proc.communicate()
         exit_code = int(proc.returncode)
 
-        self.sm.get_screen('more_details').add_to_verbose_buffer('Receive: ' + str(exit_code) + stdout + stderr)
+        self.sm.get_screen('more_details').add_to_verbose_buffer('Receive: ' + str(exit_code) + str(stdout) + str(stderr))
 
         if exit_code == 0:
             bool_out = True
