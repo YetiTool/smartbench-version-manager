@@ -212,12 +212,22 @@ class VersionManager(object):
         # need to set the usb remote filepaths
 
         set_up_platform_repo_outcome = self._set_up_usb_repo('platform', usb_remote_path)
+        self.outcome_to_screens(set_up_platform_repo_outcome)
+
         set_up_easycut_repo_outcome = self._set_up_usb_repo('easycut', usb_remote_path)
+        self.outcome_to_screens(set_up_easycut_repo_outcome)
+
         set_up_version_manager_repo_outcome = self._set_up_usb_repo('version_manager', usb_remote_path)
+        self.outcome_to_screens(set_up_version_manager_repo_outcome)
 
         platform_origin_outcome = self._set_origin_URL('platform')
+        self.outcome_to_screens(platform_origin_outcome)
+
         easycut_origin_outcome = self._set_origin_URL('easycut')
+        self.outcome_to_screens(easycut_origin_outcome)
+
         version_manager_origin_outcome = self._set_origin_URL('version_manager')
+        self.outcome_to_screens(version_manager_origin_outcome)
 
         # if set_up_platform_repo_outcome[0]:
         #     print(set_up_platform_repo_outcome[:-1]) # when screens are set up, print this outcome to details screen
