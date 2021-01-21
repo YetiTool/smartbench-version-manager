@@ -76,7 +76,7 @@ Builder.load_string("""
             BoxLayout:
                 size_hint: (None,None)
                 width: dp(780)
-                height: dp(340)
+                height: dp(300)
                 padding: 10
                 spacing: 0
                 orientation: 'horizontal'
@@ -87,13 +87,13 @@ Builder.load_string("""
             BoxLayout:
                 size_hint: (None,None)
                 width: dp(780)
-                height: dp(60)
-                padding: [300, 20]
+                height: dp(80)
+                padding: [300, 10]
                 spacing: 0
                 orientation: 'horizontal'
 
                 Button:
-                    canvas.before:
+                    canvas:
                         Color:
                             rgba: hex('#1976d2ff')
                         RoundedRectangle:

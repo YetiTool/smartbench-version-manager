@@ -62,7 +62,7 @@ class VersionManager(object):
         # Simplify what update we look for from now on: Standardize update packages from version x.x.x onwards to look for 
         # SmartBench-SW-update...zip, and then unpack that to find git repo zips, and then unpack those accordingly. 
 
-    def run_in_shell(repo, cmd):
+    def run_in_shell(self, repo, cmd):
 
         if repo == 'platform': dir_path = platform_path
         elif repo == 'easycut': dir_path = easycut_path
