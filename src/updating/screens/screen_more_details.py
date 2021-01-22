@@ -108,7 +108,7 @@ Builder.load_string("""
                         background_color: hex('#f9f9f9ff')
                         base_font_size: 26
                         underline_color: '333333'
-                        colors['title']: '333333ff'
+                        colors: root.color_dict
 
             BoxLayout:
                 size_hint: (None,None)
@@ -134,6 +134,12 @@ class ButtonMWithCanvas(ButtonBehavior, Label):
 class MoreDetailsScreenClass(Screen):
 
     verbose_buffer = ['Starting update...']
+    color_dict = DictProperty({
+                    'background': 'e5e6e9ff',
+                    'link': 'ce5c00ff',
+                    'paragraph': '202020ff',
+                    'title': '333333ff',
+                    'bullet': '000000ff'})
 
     def __init__(self, **kwargs):
 
@@ -160,5 +166,7 @@ class MoreDetailsScreenClass(Screen):
 
     def go_back(self):
         self.sm.current = 'updating'
+
+
 
 
