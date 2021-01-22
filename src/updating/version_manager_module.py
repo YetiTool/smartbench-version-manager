@@ -414,7 +414,7 @@ class VersionManager(object):
 
     def _check_usb_repo(self, repo):
         output = self.run_in_shell(repo, 'git remote')
-        if 'temp_repository' in str(ouput[1]):
+        if 'temp_repository' in str(output[1]):
             return self.run_in_shell(repo, 'git remote show temp_repository')
 
     def _remove_usb_repo(self, repo, remote_path):
