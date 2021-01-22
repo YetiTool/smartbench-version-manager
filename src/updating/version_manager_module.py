@@ -579,7 +579,7 @@ class ErrorLogWriter(object):
         pass
 
     def add_subtitle(self, subtitle):
-        title_list = ['', '', subtitle, len(subtitle)*'-']
+        title_list = [subtitle, len(subtitle)*'-']
         self.verbose_buffer.extend(title_list)
 
     def format_ouputs(self, exit_code, stoud, sterr):
@@ -596,7 +596,7 @@ class ErrorLogWriter(object):
 
     def format_command(self, cmd):
         self.verbose_buffer.append('')
-        self.verbose_buffer.append('|**' + cmd + '**')
+        self.verbose_buffer.append('**' + cmd + '**')
 
     def write_buffer_to_RST(self):
         with open('./update_error_log.txt', 'w') as filehandle:
