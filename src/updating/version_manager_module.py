@@ -590,7 +590,7 @@ class ErrorLogWriter(object):
         if not (stdout == '' or stdout == None):
             
             stdout_list = (stdout.strip()).split('\n')
-            formatting_left = [tab + tab + '*']*len(stdout_list)
+            formatting_left = ['| ' + tab + tab + '*']*len(stdout_list)
             formatting_right = ['*']*len(stdout_list)
 
             formatted_stdout = map(lambda (x,y,z): x+y+z, zip(formatting_left, stdout_list, formatting_right))
