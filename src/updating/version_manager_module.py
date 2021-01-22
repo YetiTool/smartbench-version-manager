@@ -593,7 +593,7 @@ class ErrorLogWriter(object):
         if not (sterr == '' or sterr == None):
             inner_function_buffer.append(tab + 'Error: ' + '*' + str(sterr) + '*')
 
-        verbose_buffer.extend(inner_function_buffer)
+        self.verbose_buffer.extend(inner_function_buffer)
 
     def format_command(self, cmd):
         self.verbose_buffer.append('')
