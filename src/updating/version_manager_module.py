@@ -598,6 +598,8 @@ class ErrorLogWriter(object):
 
             print formatting_right
 
+            print(zip(formatting_left, stdout_list, formatting_right))
+            
             formatted_stdout = map(lambda (x,y,z): x+y+z, zip(formatting_left, stdout_list, formatting_right))
 
             print formatted_stdout
