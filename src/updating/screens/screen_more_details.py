@@ -127,12 +127,12 @@ class MoreDetailsScreenClass(Screen):
         self.sm = kwargs['screen_manager']
         self.vm = kwargs['version_manager']
 
-        # Clock.schedule_interval(self.update_user_friendly_display, 2) 
+        Clock.schedule_interval(self.update_user_friendly_display, 2) 
 
     def add_to_verbose_buffer(self, message):
         self.verbose_buffer.append(message)
 
-    # def update_user_friendly_display(self, dt):
+    def update_user_friendly_display(self, dt):
         self.verbose_ouput.text = '\n'.join(self.verbose_buffer)
         if len(self.verbose_buffer) > 100:
             del self.verbose_buffer[0:len(self.verbose_buffer)-100]

@@ -1,7 +1,8 @@
-import csv
+import csv, threading
 import subprocess, sys, os
 
 from time import sleep
+from kivy.clock import Clock
 
 from updating import usb_storage
 
@@ -38,8 +39,6 @@ platform_path = home_dir + "console-raspi3b-plus-platform/"
 version_manager_path = home_dir + "smartbench-version-manager/"
 
 
-
-
 class VersionManager(object):
 
     current_platform_version = ''
@@ -54,6 +53,7 @@ class VersionManager(object):
     latest_version_manager_beta = ''
 
     use_usb_remote = False
+    use_wifi = False
 
     def __init__(self, screen_manager):
 
@@ -68,63 +68,55 @@ class VersionManager(object):
         # CONNECTIVITY CHECKS, i.e. if wifi or if usb: add usb
 
         # Simplify what update we look for from now on: Standardize update packages from version x.x.x onwards to look for 
-        # SmartBench-SW-update...zip, and then unpack that to find git repo zips, and then unpack those accordingly. 
-
-    def run_in_shell(self, repo, cmd):
-
-        if repo == 'platform': dir_path = platform_path
-        elif repo == 'easycut': dir_path = easycut_path
-        elif repo == 'version_manager': dir_path = version_manager_path
-        elif repo == 'home': dir_path = home_dir
-
-        full_cmd = 'cd ' + dir_path + ' && ' + cmd
-
-        self.sm.get_screen('more_details').add_to_verbose_buffer('Send: ' + str(full_cmd))
-
-        proc = subprocess.Popen(full_cmd,
-            stdout = subprocess.PIPE,
-            stderr = subprocess.STDOUT,
-            shell = True
-        )
-
-        stdout, stderr = proc.communicate()
-        exit_code = int(proc.returncode)
-
-        self.sm.get_screen('more_details').add_to_verbose_buffer('Receive: ' + str(exit_code) + str(stdout) + str(stderr))
-
-        if exit_code == 0:
-            bool_out = True
-        else:
-            bool_out = False
-
-        return [bool_out, stdout, stderr]
-
-
-    def outcome_to_screens(self, *args):
-        # initial debug test
-        for arg in args:
-            self.sm.get_screen('updating').add_to_user_friendly_buffer(arg)
+        # SmartBench-SW-update...zip, and then unpack that to find git repo zips, and then unpack those accordingly.
 
     def check_connections(self):
         # Keep tabs on wifi connection
         self.check_wifi_connection(1)
         # self.poll_wifi = Clock.schedule_interval(self.check_wifi_connection, self.WIFI_CHECK_INTERVAL)
 
-        # Set up and keep tabs on usb connection
-        self.check_USB_status(1)
-        # self.poll_USB = Clock.schedule_interval(self.check_USB_status, 0.25)
 
+    def set_up_connections(self):
+        # ensure wifi is connected, or copy update files from USB stick
+        self.outcome_to_screens('Looking for internet connection or update file on USB...')
+        start_time = time.time()
+
+        def check_connections(dt):
+
+            if self.use_wifi or self.use_usb_remote:
+                self.outcome_to_screens('Getting update...')
+                self.start_update_procedure(self)
+
+            elif time.time() > (start_time + 61):
+
+                support message = 'Could not access updates from internet connection or USB drive...' + \
+                + '\n' + \
+                'Please check your connection, the update file on your USB drive, or contact ' + \
+                'YetiTool Support at https://www.yetitool.com/SUPPORT'
+
+                self.outcome_to_screens(support_message)
+
+            else: 
+                Clock.schedule_once(check_connections, 10)
+
+        Clock.schedule_once(check_connections, 10)
+
+    def start_update_procedure(self):
+        # starting it on a separate thread so that the process doesn't interfere with screen updates
+        t = threading.Thread(target=self.standard_update)
+        t.daemon = True
+        t.start()
 
     def standard_update(self):
         self.set_remotes()
         self._clone_backup_repos_from_URL() # if wifi available
 
-        return
+        return # for debugging
 
         if self.prepare_for_update():
             fetch_outcome = self._fetch_tags_for_all_repos()
 
-            self.outcome_to_screens(fetch_outcome[1:])
+            self.outcome_to_screens(str(fetch_outcome[1:]))
 
             if fetch_outcome[0]:
 
@@ -153,7 +145,7 @@ class VersionManager(object):
                                 # need to test behaviour of this with & without wifi
                                 ansible_outcome = self._do_platform_ansible_run()
 
-                                self.outcome_to_screens(ansible_outcome[1])
+                                self.outcome_to_screens(str(ansible_outcome[1]))
 
                                 if ansible_outcome[0]: 
                                     return True
@@ -248,43 +240,25 @@ class VersionManager(object):
     ## SET UP REPO
     def set_remotes(self):
 
-        # need to set the usb remote filepaths
+        # if remotes have been copied into the remoteCache, copy them across
+        if self.use_usb_remote: 
 
-        set_up_platform_repo_outcome = self._set_up_usb_repo('platform', usb_remote_path)
-        self.outcome_to_screens(set_up_platform_repo_outcome)
+            set_up_platform_repo_outcome = self._set_up_usb_repo('platform', remote_cache_platform)
+            set_up_easycut_repo_outcome = self._set_up_usb_repo('easycut', remote_cache_easycut)
+            set_up_version_manager_repo_outcome = self._set_up_usb_repo('version_manager', remote_cache_version_manager)
 
-        set_up_easycut_repo_outcome = self._set_up_usb_repo('easycut', usb_remote_path)
-        self.outcome_to_screens(set_up_easycut_repo_outcome)
+            self.outcome_to_screens(str(set_up_version_manager_repo_outcome))
+            self.outcome_to_screens(str(set_up_easycut_repo_outcome))
+            self.outcome_to_screens(str(set_up_platform_repo_outcome))
 
-        set_up_version_manager_repo_outcome = self._set_up_usb_repo('version_manager', usb_remote_path)
-        self.outcome_to_screens(set_up_version_manager_repo_outcome)
-
+        # ensure the origin url is set (just in case repo has been cloned from a backup or similar)
         platform_origin_outcome = self._set_origin_URL('platform')
-        self.outcome_to_screens(platform_origin_outcome)
-
         easycut_origin_outcome = self._set_origin_URL('easycut')
-        self.outcome_to_screens(easycut_origin_outcome)
-
         version_manager_origin_outcome = self._set_origin_URL('version_manager')
-        self.outcome_to_screens(version_manager_origin_outcome)
-
-        # if set_up_platform_repo_outcome[0]:
-        #     print(set_up_platform_repo_outcome[:-1]) # when screens are set up, print this outcome to details screen
-
-        # if set_up_easycut_repo_outcome[0]:
-        #     print(set_up_easycut_repo_outcome[:-1]) # when screens are set up, print this outcome to details screen
-
-        # if set_up_version_manager_repo_outcome[0]:
-        #     print(set_up_version_manager_repo_outcome[:-1]) # when screens are set up, print this outcome to details screen
-
-        # if platform_origin_outcome[0]:
-        #     print(platform_origin_outcome[:-1]) # when screens are set up, print this outcome to details screen
-
-        # if easycut_origin_outcome[0]:
-        #     print(easycut_origin_outcome[:-1]) # when screens are set up, print this outcome to details screen
-
-        # if version_manager_origin_outcome[0]:
-        #     print(version_manager_origin_outcome[:-1]) # when screens are set up, print this outcome to details screen
+        
+        self.outcome_to_screens(str(easycut_origin_outcome))
+        self.outcome_to_screens(str(platform_origin_outcome))
+        self.outcome_to_screens(str(version_manager_origin_outcome))
 
     ## CHECK REPO QUALITY
 
@@ -537,18 +511,47 @@ class VersionManager(object):
             f = os.popen('hostname -I')
             first_info = f.read().strip().split(' ')[0]
             if len(first_info.split('.')) == 4:
-                return True
+                self.use_wifi = True
             else:
-                return False
+                self.use_wifi = False
 
         except:
-            return False
+            self.use_wifi = False
 
-    def check_USB_path(self):
+# -----------------------------------------------------------------------------------------------
+# COMMS
+# -----------------------------------------------------------------------------------------------
 
-        if self.usb_stick.is_available():
-            # if os.path.exists():
-            #     return True
-            pass
+    def run_in_shell(self, repo, cmd):
+
+        if repo == 'platform': dir_path = platform_path
+        elif repo == 'easycut': dir_path = easycut_path
+        elif repo == 'version_manager': dir_path = version_manager_path
+        elif repo == 'home': dir_path = home_dir
+
+        full_cmd = 'cd ' + dir_path + ' && ' + cmd
+
+        self.sm.get_screen('more_details').add_to_verbose_buffer('Send: ' + str(full_cmd))
+
+        proc = subprocess.Popen(full_cmd,
+            stdout = subprocess.PIPE,
+            stderr = subprocess.STDOUT,
+            shell = True
+        )
+
+        stdout, stderr = proc.communicate()
+        exit_code = int(proc.returncode)
+
+        self.sm.get_screen('more_details').add_to_verbose_buffer('Receive: ' + str(exit_code) + str(stdout) + str(stderr))
+
+        if exit_code == 0:
+            bool_out = True
         else:
-            return False
+            bool_out = False
+
+        return [bool_out, stdout, stderr]
+
+
+    def outcome_to_screens(self, message):
+        self.sm.get_screen('updating').add_to_user_friendly_buffer(message)
+        self.sm.get_screen('more_details').add_to_verbose_buffer(message)
