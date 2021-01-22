@@ -541,7 +541,8 @@ class VersionManager(object):
 
         full_cmd = 'cd ' + dir_path + ' && ' + cmd
 
-        self.sm.get_screen('more_details').add_to_verbose_buffer('Send: ' + str(full_cmd))
+        # self.sm.get_screen('more_details').add_to_verbose_buffer('Send: ' + str(full_cmd))
+        self.el.format_command(full_cmd)
 
         proc = subprocess.Popen(full_cmd,
             stdout = subprocess.PIPE,
@@ -552,9 +553,10 @@ class VersionManager(object):
         stdout, stderr = proc.communicate()
         exit_code = int(proc.returncode)
 
-        self.sm.get_screen('more_details').add_to_verbose_buffer(tab + 'Exit code: ' + str(exit_code))
-        self.sm.get_screen('more_details').add_to_verbose_buffer(tab + 'Output: ' + str(stdout))
-        self.sm.get_screen('more_details').add_to_verbose_buffer(tab + 'Error message: ' + str(stderr))
+        # self.sm.get_screen('more_details').add_to_verbose_buffer(tab + 'Exit code: ' + str(exit_code))
+        # self.sm.get_screen('more_details').add_to_verbose_buffer(tab + 'Output: ' + str(stdout))
+        # self.sm.get_screen('more_details').add_to_verbose_buffer(tab + 'Error message: ' + str(stderr))
+        self.el.format_ouputs(exit_code, stdout, stderr)
 
         if exit_code == 0:
             bool_out = True
@@ -565,7 +567,8 @@ class VersionManager(object):
 
     def outcome_to_screens(self, message):
         self.sm.get_screen('updating').add_to_user_friendly_buffer(message)
-        self.sm.get_screen('more_details').add_to_verbose_buffer(message)
+        # self.sm.get_screen('more_details').add_to_verbose_buffer(message)
+        self.el.add_subtitle(message)
 
 
 class ErrorLogWriter(object):
