@@ -38,6 +38,9 @@ easycut_path = home_dir + "easycut-smartbench/"
 platform_path = home_dir + "console-raspi3b-plus-platform/"
 version_manager_path = home_dir + "smartbench-version-manager/"
 
+### FORMATTING
+tab = "     "
+
 
 class VersionManager(object):
 
@@ -233,20 +236,28 @@ class VersionManager(object):
         return dict_object['PL-SW']
 
 
-    ## SET UP REPO
+    ## SET UP REMOTE REPOS
     def set_remotes(self):
 
         # if remotes have been copied into the remoteCache, copy them across
-        if self.use_usb_remote: 
-
+        if self.use_usb_remote:
             set_up_platform_repo_outcome = self._set_up_usb_repo('platform', remote_cache_platform)
             set_up_easycut_repo_outcome = self._set_up_usb_repo('easycut', remote_cache_easycut)
             set_up_version_manager_repo_outcome = self._set_up_usb_repo('version_manager', remote_cache_version_manager)
+
+        else: 
+            self.unset_temp_remotes_if_they_exist()
 
         # ensure the origin url is set (just in case repo has been cloned from a backup or similar)
         platform_origin_outcome = self._set_origin_URL('platform')
         easycut_origin_outcome = self._set_origin_URL('easycut')
         version_manager_origin_outcome = self._set_origin_URL('version_manager')
+
+    def unset_temp_remotes_if_they_exist(self):
+        if not (self._check_usb_repo('platform')[0]): self._remove_usb_repo('platform', remote_cache_platform)
+        if not (self._check_usb_repo('easycut')[0]): self._remove_usb_repo('easycut', remote_cache_easycut)
+        if not (self._check_usb_repo('version_manager')[0]): self._remove_usb_repo('version_manager', remote_cache_version_manager)
+
 
     ## CHECK REPO QUALITY
 
@@ -324,24 +335,21 @@ class VersionManager(object):
             if not clone_from_usb_outcome[0]:
                 self._clone_fresh_repo(path + '-backup' + bundle_extension)
 
-
-
-
     ## FETCH TAGS AND CHECKOUT 
     def refresh_latest_versions(self):
 
-            platform_version_list = bash('get_tag_list platform')
-            easycut_version_list = bash('get_tag_list easycut')
-            version_manager_version_list = bash('get_tag_list version_manager')
+        platform_version_list = bash('get_tag_list platform')
+        easycut_version_list = bash('get_tag_list easycut')
+        version_manager_version_list = bash('get_tag_list version_manager')
 
-            self.latest_platform_version = str([tag for tag in platform_version_list if "beta" not in tag][0])
-            self.latest_platform_beta = str([tag for tag in platform_version_list if "beta" in tag][0])
+        self.latest_platform_version = str([tag for tag in platform_version_list if "beta" not in tag][0])
+        self.latest_platform_beta = str([tag for tag in platform_version_list if "beta" in tag][0])
 
-            self.latest_easycut_version = str([tag for tag in easycut_version_list if "beta" not in tag][0])
-            self.latest_easycut_beta = str([tag for tag in easycut_version_list if "beta" in tag][0])
+        self.latest_easycut_version = str([tag for tag in easycut_version_list if "beta" not in tag][0])
+        self.latest_easycut_beta = str([tag for tag in easycut_version_list if "beta" in tag][0])
 
-            self.latest_version_manager_version = str([tag for tag in version_manager_version_list if "beta" not in tag][0])
-            self.latest_version_manager_beta = str([tag for tag in version_manager_version_list if "beta" in tag][0])
+        self.latest_version_manager_version = str([tag for tag in version_manager_version_list if "beta" not in tag][0])
+        self.latest_version_manager_beta = str([tag for tag in version_manager_version_list if "beta" in tag][0])
 
 #-------------------------------------------------------------------------------------------------------------------
 
@@ -400,8 +408,14 @@ class VersionManager(object):
     ## set up temporary repository from USB
     # arguments: argument 1 is the repo we're setting up for, argument 2 is the usb filepath
 
-    def _set_up_usb_repo(self, repo, usb_remote_path):
-        return self.run_in_shell(repo, 'git remote add temp_repository ' + usb_remote_path)
+    def _set_up_usb_repo(self, repo, remote_path):
+        return self.run_in_shell(repo, 'git remote add temp_repository ' + remote_path)
+
+    def _check_usb_repo(self, repo):
+        return self.run_in_shell(repo, 'git remote show temp_repository')
+
+    def _remove_usb_repo(self, repo, remote_path):
+        return self.run_in_shell(repo, 'git remote add temp_repository ' + remote_path)
 
     # set origin URL (just in case)
     def _set_origin_URL(self, repo):
@@ -445,9 +459,9 @@ class VersionManager(object):
             outcome = self.run_in_shell('home', 'git clone --bare ' + origin + ' ' + home_dir + target)
 
             if outcome[0]: 
-                self.outcome_to_screens('\tBackup repository ' + target + ' created successfully')
+                self.outcome_to_screens('Backup repository ' + target + ' created successfully')
             else:
-                self.outcome_to_screens('\tBackup repository could not be created. Check details for more information.')
+                self.outcome_to_screens('Backup repository could not be created. Check details for more information.')
 
             return outcome[0]
 
@@ -529,9 +543,9 @@ class VersionManager(object):
         stdout, stderr = proc.communicate()
         exit_code = int(proc.returncode)
 
-        self.sm.get_screen('more_details').add_to_verbose_buffer('\tExit code: ' + str(exit_code))
-        self.sm.get_screen('more_details').add_to_verbose_buffer('\tOutput: ' + str(stdout))
-        self.sm.get_screen('more_details').add_to_verbose_buffer('\tError message: ' + str(stderr))
+        self.sm.get_screen('more_details').add_to_verbose_buffer(tab + 'Exit code: ' + str(exit_code))
+        self.sm.get_screen('more_details').add_to_verbose_buffer(tab + 'Output: ' + str(stdout))
+        self.sm.get_screen('more_details').add_to_verbose_buffer(tab + 'Error message: ' + str(stderr))
 
         if exit_code == 0:
             bool_out = True
