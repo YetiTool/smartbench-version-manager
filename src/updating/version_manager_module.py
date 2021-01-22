@@ -586,7 +586,7 @@ class ErrorLogWriter(object):
 
         inner_function_buffer = []
         inner_function_buffer.append(tab + ':Exit code: ' + '*' + str(exit_code) + '*')
-        inner_function_buffer.append(tab + ':Output: ' + '*' + str(exit_code) + '*')
+        inner_function_buffer.append(tab + ':Output: ')
         if not (stdout == '' or stdout == None):
             
             stdout_list = (stdout.strip()).split('\n')
