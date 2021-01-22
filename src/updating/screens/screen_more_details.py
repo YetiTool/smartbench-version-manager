@@ -49,7 +49,7 @@ Builder.load_string("""
 
 <MoreDetailsScreenClass>
 
-    verbose_ouput: verbose_ouput
+    # verbose_ouput: verbose_ouput
     update_error_log: update_error_log
 
     BoxLayout:
