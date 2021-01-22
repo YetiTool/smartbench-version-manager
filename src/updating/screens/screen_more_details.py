@@ -106,7 +106,7 @@ Builder.load_string("""
                     RstDocument:
                         id: update_error_log
                         background_color: hex('#f9f9f9ff')
-                        base_font_size: 20
+                        base_font_size: 22
                         underline_color: '333333'
                         colors: root.color_dict
 
