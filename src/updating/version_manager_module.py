@@ -594,6 +594,8 @@ class ErrorLogWriter(object):
             formatting_right = '*'*len(stdout_list)
             formatted_stdout = map(lambda (x,y,z): x+y+z, zip(formatting_left, stdout_list, formatting_right))
 
+            print formatted_stdout
+
             inner_function_buffer.extend(formatted_stdout)
 
         if not (sterr == '' or sterr == None):
