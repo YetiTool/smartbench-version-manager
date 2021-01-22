@@ -97,7 +97,7 @@ class VersionManager(object):
         Clock.schedule_once(check_connections, 10)
         Clock.schedule_once(lambda dt: self.outcome_to_screens('Looking for internet connection or update file on USB...'), 10)
 
-    def start_update_procedure(self):
+    def start_update_procedure(self, dt):
         # starting it on a separate thread so that the process doesn't interfere with screen updates
         t = threading.Thread(target=self.standard_update)
         t.daemon = True
