@@ -107,7 +107,7 @@ Builder.load_string("""
                         id: update_error_log
                         background_color: hex('#f9f9f9ff')
                         base_font_size: 26
-                        underline_color: hex('#1976d2ff')
+                        underline_color: '333333'
 
             BoxLayout:
                 size_hint: (None,None)
