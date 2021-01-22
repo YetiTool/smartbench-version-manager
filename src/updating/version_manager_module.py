@@ -416,7 +416,7 @@ class VersionManager(object):
         return self.run_in_shell(repo, 'git remote show temp_repository')
 
     def _remove_usb_repo(self, repo, remote_path):
-        return self.run_in_shell(repo, 'git remote remove temp_repository ' + remote_path)
+        return self.run_in_shell(repo, 'git remote remove temp_repository')
 
     # set origin URL (just in case)
     def _set_origin_URL(self, repo):
