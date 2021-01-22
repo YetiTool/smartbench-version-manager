@@ -586,12 +586,11 @@ class ErrorLogWriter(object):
 
         inner_function_buffer = []
         inner_function_buffer.append(tab + 'Exit code: ' + '*' + str(exit_code) + '*')
-        inner_function_buffer.append('')
-
         if not (stoud == '' or stoud == None):
             inner_function_buffer.append(tab + 'Output: ' + '*' + str(stoud) + '*')
         if not (sterr == '' or sterr == None):
             inner_function_buffer.append(tab + 'Error: ' + '*' + str(sterr) + '*')
+        inner_function_buffer.append('')
 
         self.verbose_buffer.extend(inner_function_buffer)
 
