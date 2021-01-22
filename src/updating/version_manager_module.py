@@ -95,7 +95,7 @@ class VersionManager(object):
                 Clock.schedule_once(check_connections, 10)
 
         Clock.schedule_once(check_connections, 10)
-        Clock.schedule_once(lambda dt: self.outcome_to_screens('Looking for internet connection or update file on USB...'), 10)
+        Clock.schedule_once(lambda dt: self.outcome_to_screens('Looking for internet connection or update file on USB...'), 4)
 
     def start_update_procedure(self, dt):
         # starting it on a separate thread so that the process doesn't interfere with screen updates
@@ -106,8 +106,6 @@ class VersionManager(object):
     def standard_update(self):
         self.set_remotes()
         self._clone_backup_repos_from_URL() # if wifi available
-
-        return # for debugging
 
         if self.prepare_for_update():
             fetch_outcome = self._fetch_tags_for_all_repos()
@@ -530,7 +528,7 @@ class VersionManager(object):
         exit_code = int(proc.returncode)
 
         full_output = 'Receive: ' + str(exit_code) + ' ' + str(stdout) + ' ' + str(stderr)
-        self.sm.get_screen('more_details').add_to_verbose_buffer()
+        self.sm.get_screen('more_details').add_to_verbose_buffer(full_output)
 
         if exit_code == 0:
             bool_out = True
