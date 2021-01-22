@@ -9,7 +9,7 @@ import os, sys
 from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.scrollview import ScrollView
-from kivy.properties import StringProperty
+from kivy.properties import StringProperty, DictProperty
 from kivy.clock import Clock
 from kivy.graphics import RoundedRectangle, Color
 from kivy.uix.button import ButtonBehavior
