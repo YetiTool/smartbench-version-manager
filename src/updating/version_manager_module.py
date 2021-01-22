@@ -492,7 +492,7 @@ class VersionManager(object):
 # CONNECTIONS TO REMOTES
 # -----------------------------------------------------------------------------------------------
 
-    def check_wifi_connection(self):
+    def check_wifi_connection(self, dt):
 
         try:
             f = os.popen('hostname -I')
