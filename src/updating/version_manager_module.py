@@ -62,6 +62,8 @@ class VersionManager(object):
         self.usb_stick = usb_storage.USB_storage(self.sm, self)
         self.usb_stick.enable()
 
+        self.poll_wifi = Clock.schedule_interval(self.check_wifi_connection, 2)
+
         # need to build in: 
         # also what happens if: - do fetch, lose wifi, checkout tag/branch/etc? 
 
@@ -83,13 +85,13 @@ class VersionManager(object):
             elif time.time() > (start_time + 61):
 
                 support_message = 'Could not access updates from internet connection or USB drive...' + \
-                + '\n' + \
+                '\n' + \
                 'Please check your connection, the update file on your USB drive, or contact ' + \
                 'YetiTool Support at https://www.yetitool.com/SUPPORT'
 
                 self.outcome_to_screens(support_message)
 
-            else: 
+            else:
                 Clock.schedule_once(check_connections, 10)
 
         Clock.schedule_once(check_connections, 10)
