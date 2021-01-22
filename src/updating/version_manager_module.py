@@ -246,7 +246,7 @@ class VersionManager(object):
             set_up_easycut_repo_outcome = self._set_up_usb_repo('easycut', remote_cache_easycut)
             set_up_version_manager_repo_outcome = self._set_up_usb_repo('version_manager', remote_cache_version_manager)
 
-        else: 
+        else:
             self.unset_temp_remotes_if_they_exist()
 
         # ensure the origin url is set (just in case repo has been cloned from a backup or similar)
@@ -416,7 +416,7 @@ class VersionManager(object):
         return self.run_in_shell(repo, 'git remote show temp_repository')
 
     def _remove_usb_repo(self, repo, remote_path):
-        return self.run_in_shell(repo, 'git remote add temp_repository ' + remote_path)
+        return self.run_in_shell(repo, 'git remote remove temp_repository ' + remote_path)
 
     # set origin URL (just in case)
     def _set_origin_URL(self, repo):
