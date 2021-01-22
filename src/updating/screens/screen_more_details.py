@@ -134,8 +134,8 @@ class MoreDetailsScreenClass(Screen):
 
     def update_user_friendly_display(self, dt):
         self.verbose_ouput.text = '\n'.join(self.verbose_buffer)
-        if len(self.verbose_buffer) > 100:
-            del self.verbose_buffer[0:len(self.verbose_buffer)-100]
+        if len(self.verbose_buffer) > 60:
+            del self.verbose_buffer[0:len(self.verbose_buffer)-60]
 
     def go_back(self):
         self.sm.current = 'updating'
