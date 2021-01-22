@@ -39,7 +39,7 @@ platform_path = home_dir + "console-raspi3b-plus-platform/"
 version_manager_path = home_dir + "smartbench-version-manager/"
 
 ### FORMATTING
-tab = "     "
+tab = '\t'
 
 
 class VersionManager(object):
@@ -585,14 +585,13 @@ class ErrorLogWriter(object):
     def format_ouputs(self, exit_code, stoud, sterr):
 
         inner_function_buffer = ''
-
-
-        self.verbose_buffer.append('|Exit code: ' + '*' + str(exit_code) + '*')
+        inner_function_buffer.append(tab + 'Exit code: ' + '*' + str(exit_code) + '*')
+        inner_function_buffer.append('')
 
         if not (stoud == '' or stoud == None):
-            self.verbose_buffer.append('|Output: ' + '*' + stoud + '*')
+            inner_function_buffer.append(tab + 'Output: ' + '*' + str(stoud) + '*')
         if not (sterr == '' or sterr == None):
-            self.verbose_buffer.append('|Error: ' + '*' + sterr + '*')
+            inner_function_buffer.append(tab + 'Error: ' + '*' + str(sterr) + '*')
 
     def format_command(self, cmd):
         self.verbose_buffer.append('')
@@ -600,4 +599,4 @@ class ErrorLogWriter(object):
 
     def write_buffer_to_RST(self):
         with open('./update_error_log.txt', 'w') as filehandle:
-            filehandle.writelines("%s\n" % line for line in self.verbose_buffer)
+            filehandle.writelines("%s\n\n" % line for line in self.verbose_buffer)
