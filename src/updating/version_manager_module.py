@@ -588,7 +588,7 @@ class ErrorLogWriter(object):
         inner_function_buffer.append(tab + 'Exit code: ' + '*' + str(exit_code) + '*')
         if not (stdout == '' or stdout == None):
             
-            stdout_list = (stdout.str())split('\n')
+            stdout_list = (stdout.strip()).split('\n')
 
             formatting_left = [tab + '*']*len(stdout_list)
 
