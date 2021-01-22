@@ -591,7 +591,13 @@ class ErrorLogWriter(object):
             stdout_list = stdout.split('\n')
 
             formatting_left = (tab + '*')*len(stdout_list)
+
+            print formatting_left
+
             formatting_right = '*'*len(stdout_list)
+
+            print formatting_right
+            
             formatted_stdout = map(lambda (x,y,z): x+y+z, zip(formatting_left, stdout_list, formatting_right))
 
             print formatted_stdout
