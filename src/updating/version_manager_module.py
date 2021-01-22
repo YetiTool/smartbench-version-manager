@@ -111,6 +111,7 @@ class VersionManager(object):
     def standard_update(self):
         self.set_remotes()
         self._clone_backup_repos_from_URL() # if wifi available
+        return
 
         if self.prepare_for_update():
             fetch_outcome = self._fetch_tags_for_all_repos()
