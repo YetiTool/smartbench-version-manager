@@ -582,12 +582,20 @@ class ErrorLogWriter(object):
         title_list = [subtitle, len(subtitle)*'-']
         self.verbose_buffer.extend(title_list)
 
-    def format_ouputs(self, exit_code, stoud, sterr):
+    def format_ouputs(self, exit_code, stdoud, sterr):
 
         inner_function_buffer = []
         inner_function_buffer.append(tab + 'Exit code: ' + '*' + str(exit_code) + '*')
-        if not (stoud == '' or stoud == None):
-            inner_function_buffer.append(tab + 'Output: ' + '*' + str(stoud) + '*')
+        if not (stoud == '' or stdout == None):
+            
+            stout_list = stdout.split('\n')
+
+            formatting_left = (tab + '*')*len(stout_list)
+            formatting_right = '*'*len(stout_list)
+            formatted_stdout = map(lambda (x,y,z): x+y+z, zip(formatting_left, stout_list, formatting_right))
+
+            inner_function_buffer.extend(formatted_stdout)
+
         if not (sterr == '' or sterr == None):
             inner_function_buffer.append(tab + 'Error: ' + '*' + str(sterr) + '*')
         inner_function_buffer.append('')
@@ -600,4 +608,4 @@ class ErrorLogWriter(object):
 
     def write_buffer_to_RST(self):
         with open('./update_error_log.txt', 'w') as filehandle:
-            filehandle.writelines("%s\n\n" % line for line in self.verbose_buffer)
+            filehandle.writelines("%s\n" % line for line in self.verbose_buffer)
