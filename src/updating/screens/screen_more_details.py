@@ -108,6 +108,7 @@ Builder.load_string("""
                         background_color: hex('#f9f9f9ff')
                         base_font_size: 26
                         underline_color: '333333'
+                        colors['title']: '333333ff'
 
             BoxLayout:
                 size_hint: (None,None)

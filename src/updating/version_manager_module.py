@@ -583,6 +583,10 @@ class ErrorLogWriter(object):
         self.verbose_buffer.extend(title_list)
 
     def format_ouputs(self, exit_code, stoud, sterr):
+
+        inner_function_buffer = ''
+
+
         self.verbose_buffer.append('|Exit code: ' + '*' + str(exit_code) + '*')
 
         if not (stoud == '' or stoud == None):
