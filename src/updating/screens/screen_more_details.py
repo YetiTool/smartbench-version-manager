@@ -50,6 +50,7 @@ Builder.load_string("""
 <MoreDetailsScreenClass>
 
     verbose_ouput: verbose_ouput
+    update_error_log: update_error_log
 
     BoxLayout:
         height: dp(800)
@@ -93,8 +94,20 @@ Builder.load_string("""
                 spacing: 0
                 orientation: 'horizontal'
 
-                ScrollableVerboseOutput:
-                    id: verbose_ouput
+                # ScrollableVerboseOutput:
+                #     id: verbose_ouput
+
+                ScrollView:
+                    size: self.size
+                    pos: self.pos
+                    do_scroll_x: True
+                    do_scroll_y: True
+                    scroll_type: ['content']
+                    RstDocument:
+                        id: update_error_log
+                        background_color: hex('#f9f9f9ff')
+                        base_font_size: 26
+                        underline_color: hex('#1976d2ff')
 
             BoxLayout:
                 size_hint: (None,None)
@@ -127,15 +140,22 @@ class MoreDetailsScreenClass(Screen):
         self.sm = kwargs['screen_manager']
         self.vm = kwargs['version_manager']
 
-        Clock.schedule_interval(self.update_user_friendly_display, 2) 
+        Clock.schedule_interval(self.update_user_friendly_display, 2)
 
-    def add_to_verbose_buffer(self, message):
-        self.verbose_buffer.append(message)
+    def on_pre_enter(self):
+        self.show_rst()
 
-    def update_user_friendly_display(self, dt):
-        self.verbose_ouput.text = '\n'.join(self.verbose_buffer)
-        if len(self.verbose_buffer) > 60:
-            del self.verbose_buffer[0:len(self.verbose_buffer)-60]
+    # def add_to_verbose_buffer(self, message):
+    #     self.verbose_buffer.append(message)
+
+    # def update_user_friendly_display(self, dt):
+    #     self.verbose_ouput.text = '\n'.join(self.verbose_buffer)
+    #     if len(self.verbose_buffer) > 60:
+    #         del self.verbose_buffer[0:len(self.verbose_buffer)-60]
+
+    def show_rst(self):
+        self.update_error_log.source = './update_error_log.txt'
+
 
     def go_back(self):
         self.sm.current = 'updating'

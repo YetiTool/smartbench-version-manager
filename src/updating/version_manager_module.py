@@ -61,6 +61,7 @@ class VersionManager(object):
     def __init__(self, screen_manager):
 
         self.sm = screen_manager
+        self.el = ErrorLogWriter()
 
         self.usb_stick = usb_storage.USB_storage(self.sm, self)
         self.usb_stick.enable()
@@ -111,6 +112,9 @@ class VersionManager(object):
     def standard_update(self):
         self.set_remotes()
         self._clone_backup_repos_from_URL() # if wifi available
+
+        self.el.write_buffer_to_RST()
+        print('Buffer written')
         return
 
         if self.prepare_for_update():
@@ -562,3 +566,31 @@ class VersionManager(object):
     def outcome_to_screens(self, message):
         self.sm.get_screen('updating').add_to_user_friendly_buffer(message)
         self.sm.get_screen('more_details').add_to_verbose_buffer(message)
+
+
+class ErrorLogWriter(object):
+
+    verbose_buffer = []
+
+    def __init__(self):
+        pass
+
+    def add_subtitle(self, subtitle):
+        title_list = ['', '', subtitle, len(subtitle)*'*']
+        verbose_buffer.extend(title_list)
+
+    def format_ouputs(self, exit_code, stoud, sterr):
+        verbose_buffer.append('Exit code: ' + '*' + exit_code + '*')
+
+        if not (stoud == '' or stoud == None):
+            verbose_buffer.append('Output: ' + '*' + stoud + '*')
+        if not (sterr == '' or sterr == None):
+            verbose_buffer.append('Error: ' + '*' + sterr + '*')
+
+    def format_command(self, cmd):
+        verbose_buffer.append('')
+        verbose_buffer.append('**' + cmd + '**')
+
+    def write_buffer_to_RST(self):
+        with open('./update_error_log.txt', 'w') as filehandle:
+            filehandle.writelines("%s\n" % line for line in self.verbose_buffer)
