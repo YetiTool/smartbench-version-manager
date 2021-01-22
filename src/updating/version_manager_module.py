@@ -592,7 +592,7 @@ class ErrorLogWriter(object):
 
             formatting_left = (tab + '*')*len(stdout_list)
             formatting_right = '*'*len(stdout_list)
-            formatted_stdout = map(lambda (x,y,z): x+y+z, zip(formatting_left, stout_list, formatting_right))
+            formatted_stdout = map(lambda (x,y,z): x+y+z, zip(formatting_left, stdout_list, formatting_right))
 
             inner_function_buffer.extend(formatted_stdout)
 
