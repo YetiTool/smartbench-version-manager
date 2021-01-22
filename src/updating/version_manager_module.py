@@ -62,9 +62,6 @@ class VersionManager(object):
         self.usb_stick = usb_storage.USB_storage(self.sm, self)
         self.usb_stick.enable()
 
-        if sys.platform != 'win32' and sys.platform != 'darwin':
-            self.set_up_connections()
-
         # need to build in: 
         # also what happens if: - do fetch, lose wifi, checkout tag/branch/etc? 
 
@@ -75,7 +72,6 @@ class VersionManager(object):
 
     def set_up_connections(self):
         # ensure wifi is connected, or copy update files from USB stick
-        self.outcome_to_screens('Looking for internet connection or update file on USB...')
         start_time = time.time()
 
         def check_connections(dt):
@@ -97,6 +93,7 @@ class VersionManager(object):
                 Clock.schedule_once(check_connections, 10)
 
         Clock.schedule_once(check_connections, 10)
+        Clock.schedule_once(lambda dt: self.outcome_to_screens('Looking for internet connection or update file on USB...'), 10)
 
     def start_update_procedure(self):
         # starting it on a separate thread so that the process doesn't interfere with screen updates
