@@ -140,7 +140,7 @@ class MoreDetailsScreenClass(Screen):
         self.sm = kwargs['screen_manager']
         self.vm = kwargs['version_manager']
 
-        Clock.schedule_interval(self.update_user_friendly_display, 2)
+        # Clock.schedule_interval(self.update_user_friendly_display, 2)
 
     def on_pre_enter(self):
         self.show_rst()
