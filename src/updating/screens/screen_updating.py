@@ -133,13 +133,8 @@ class UpdatingScreenClass(Screen):
 
         Clock.schedule_interval(self.update_user_friendly_display, 2) 
 
-    def on_enter(self):
-        if sys.platform != 'win32' and sys.platform != 'darwin':
-            Clock.schedule_once(lambda dt: self.vm.standard_update(), 5)
-
-    def add_to_user_friendly_buffer(self, *message):
-
-        self.basic_buffer.append(str(message))
+    def add_to_user_friendly_buffer(self, message):
+        self.basic_buffer.append(message)
 
     def update_user_friendly_display(self, dt):
         self.user_friendly_output.text = '\n'.join(self.basic_buffer)

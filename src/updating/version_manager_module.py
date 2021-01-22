@@ -62,6 +62,9 @@ class VersionManager(object):
         self.usb_stick = usb_storage.USB_storage(self.sm, self)
         self.usb_stick.enable()
 
+        if sys.platform != 'win32' and sys.platform != 'darwin':
+            self.set_up_connections()
+
         # need to build in: 
         # also what happens if: - do fetch, lose wifi, checkout tag/branch/etc? 
 
@@ -69,12 +72,6 @@ class VersionManager(object):
 
         # Simplify what update we look for from now on: Standardize update packages from version x.x.x onwards to look for 
         # SmartBench-SW-update...zip, and then unpack that to find git repo zips, and then unpack those accordingly.
-
-    def check_connections(self):
-        # Keep tabs on wifi connection
-        self.check_wifi_connection(1)
-        # self.poll_wifi = Clock.schedule_interval(self.check_wifi_connection, self.WIFI_CHECK_INTERVAL)
-
 
     def set_up_connections(self):
         # ensure wifi is connected, or copy update files from USB stick
@@ -247,18 +244,10 @@ class VersionManager(object):
             set_up_easycut_repo_outcome = self._set_up_usb_repo('easycut', remote_cache_easycut)
             set_up_version_manager_repo_outcome = self._set_up_usb_repo('version_manager', remote_cache_version_manager)
 
-            self.outcome_to_screens(str(set_up_version_manager_repo_outcome))
-            self.outcome_to_screens(str(set_up_easycut_repo_outcome))
-            self.outcome_to_screens(str(set_up_platform_repo_outcome))
-
         # ensure the origin url is set (just in case repo has been cloned from a backup or similar)
         platform_origin_outcome = self._set_origin_URL('platform')
         easycut_origin_outcome = self._set_origin_URL('easycut')
         version_manager_origin_outcome = self._set_origin_URL('version_manager')
-        
-        self.outcome_to_screens(str(easycut_origin_outcome))
-        self.outcome_to_screens(str(platform_origin_outcome))
-        self.outcome_to_screens(str(version_manager_origin_outcome))
 
     ## CHECK REPO QUALITY
 
@@ -451,7 +440,6 @@ class VersionManager(object):
     # arguments are origin = git URL (or bundle to clone), target = backup target directory
     def _clone_backup_repo(self, origin, target):
         if os.path.exists(home_dir + target):
-            self.outcome_to_screens('Backup repo ' + target + ' already exists')
             return True
         else:
             self.outcome_to_screens('Creating backup repository in ' + target + '...')
@@ -542,7 +530,8 @@ class VersionManager(object):
         stdout, stderr = proc.communicate()
         exit_code = int(proc.returncode)
 
-        self.sm.get_screen('more_details').add_to_verbose_buffer('Receive: ' + str(exit_code) + str(stdout) + str(stderr))
+        full_output = 'Receive: ' + str(exit_code) + ' ' + str(stdout) + ' ' + str(stderr)
+        self.sm.get_screen('more_details').add_to_verbose_buffer()
 
         if exit_code == 0:
             bool_out = True
@@ -550,7 +539,6 @@ class VersionManager(object):
             bool_out = False
 
         return [bool_out, stdout, stderr]
-
 
     def outcome_to_screens(self, message):
         self.sm.get_screen('updating').add_to_user_friendly_buffer(message)
