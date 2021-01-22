@@ -79,7 +79,9 @@ class VersionManager(object):
         def check_connections(dt):
 
             if self.use_wifi or self.use_usb_remote:
-                self.outcome_to_screens('Getting update...')
+
+                if self.use_wifi: self.outcome_to_screens('Wifi connection found.')
+                if self.use_usb_remote: self.outcome_to_screens('Update file found on USB')
                 self.start_update_procedure(self)
 
             elif time.time() > (start_time + 61):
@@ -95,7 +97,7 @@ class VersionManager(object):
                 Clock.schedule_once(check_connections, 10)
 
         Clock.schedule_once(check_connections, 10)
-        Clock.schedule_once(lambda dt: self.outcome_to_screens('Looking for internet connection or update file on USB...'), 4)
+        Clock.schedule_once(lambda dt: self.outcome_to_screens('Looking for internet connection or update file on USB...'), 2)
 
     def start_update_procedure(self, dt):
         # starting it on a separate thread so that the process doesn't interfere with screen updates
@@ -527,8 +529,9 @@ class VersionManager(object):
         stdout, stderr = proc.communicate()
         exit_code = int(proc.returncode)
 
-        full_output = 'Receive: ' + str(exit_code) + ' ' + str(stdout) + ' ' + str(stderr)
-        self.sm.get_screen('more_details').add_to_verbose_buffer(full_output)
+        self.sm.get_screen('more_details').add_to_verbose_buffer('\tExit code: ' + str(exit_code))
+        self.sm.get_screen('more_details').add_to_verbose_buffer('\tOutput: ' + str(stdout))
+        self.sm.get_screen('more_details').add_to_verbose_buffer('\tError message: ' + str(stderr))
 
         if exit_code == 0:
             bool_out = True
