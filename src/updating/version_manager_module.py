@@ -580,19 +580,19 @@ class ErrorLogWriter(object):
 
     def add_subtitle(self, subtitle):
         title_list = ['', '', subtitle, len(subtitle)*'*']
-        verbose_buffer.extend(title_list)
+        self.verbose_buffer.extend(title_list)
 
     def format_ouputs(self, exit_code, stoud, sterr):
-        verbose_buffer.append('Exit code: ' + '*' + exit_code + '*')
+        self.verbose_buffer.append('Exit code: ' + '*' + exit_code + '*')
 
         if not (stoud == '' or stoud == None):
-            verbose_buffer.append('Output: ' + '*' + stoud + '*')
+            self.verbose_buffer.append('Output: ' + '*' + stoud + '*')
         if not (sterr == '' or sterr == None):
-            verbose_buffer.append('Error: ' + '*' + sterr + '*')
+            self.verbose_buffer.append('Error: ' + '*' + sterr + '*')
 
     def format_command(self, cmd):
-        verbose_buffer.append('')
-        verbose_buffer.append('**' + cmd + '**')
+        self.verbose_buffer.append('')
+        self.verbose_buffer.append('**' + cmd + '**')
 
     def write_buffer_to_RST(self):
         with open('./update_error_log.txt', 'w') as filehandle:
