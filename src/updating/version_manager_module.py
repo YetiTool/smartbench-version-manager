@@ -89,7 +89,7 @@ class VersionManager(object):
 
             elif time.time() > (start_time + 61):
 
-                support message = 'Could not access updates from internet connection or USB drive...' + \
+                support_message = 'Could not access updates from internet connection or USB drive...' + \
                 + '\n' + \
                 'Please check your connection, the update file on your USB drive, or contact ' + \
                 'YetiTool Support at https://www.yetitool.com/SUPPORT'
