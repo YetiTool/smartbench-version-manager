@@ -585,12 +585,12 @@ class ErrorLogWriter(object):
     def format_ouputs(self, exit_code, stdout, sterr):
 
         inner_function_buffer = []
-        inner_function_buffer.append(tab + ':Exit code: ' + '*' + str(exit_code) + '*')
-        inner_function_buffer.append(tab + ':Output: ')
+        inner_function_buffer.append(tab + '- **Exit code:** ' + '*' + str(exit_code) + '*')
+        inner_function_buffer.append(tab + '- **Output:** ')
         if not (stdout == '' or stdout == None):
             
             stdout_list = (stdout.strip()).split('\n')
-            formatting_left = [tab + tab + '*']*len(stdout_list)
+            formatting_left = [tab + tab + '- *']*len(stdout_list)
             formatting_right = ['*']*len(stdout_list)
 
             formatted_stdout = map(lambda (x,y,z): x+y+z, zip(formatting_left, stdout_list, formatting_right))
@@ -598,7 +598,7 @@ class ErrorLogWriter(object):
             inner_function_buffer.extend(formatted_stdout)
 
         if not (sterr == '' or sterr == None):
-            inner_function_buffer.append(tab + 'Error: ' + '*' + str(sterr) + '*')
+            inner_function_buffer.append(tab + '- **Error:** ' + '*' + str(sterr) + '*')
         # inner_function_buffer.append('')
 
         self.verbose_buffer.extend(inner_function_buffer)

@@ -139,7 +139,7 @@ class MoreDetailsScreenClass(Screen):
                     'link': 'ce5c00ff',
                     'paragraph': '202020ff',
                     'title': '333333ff',
-                    'bullet': '000000ff'})
+                    'bullet': 'f9f9f9ff'})
 
     def __init__(self, **kwargs):
 
