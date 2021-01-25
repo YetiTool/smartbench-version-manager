@@ -582,28 +582,28 @@ class ErrorLogWriter(object):
         pass
 
     def add_subtitle(self, subtitle):
-        title_list = [subtitle, len(subtitle)*'-']
+        title_list = ['',subtitle, len(subtitle)*'-']
         self.verbose_buffer.extend(title_list)
 
     def format_ouputs(self, exit_code, stdout, stderr):
 
         inner_function_buffer = []
-        inner_function_buffer.append('- **Exit code:** ' + '*' + str(exit_code) + '*')
+        inner_function_buffer.append(tab + '- **Exit code:** ' + '*' + str(exit_code) + '*')
 
         if not (stdout == '' or stdout == None):
-            inner_function_buffer.append('- **Output:** ')
+            inner_function_buffer.append(tab + '- **Output:** ')
             stdout_list = [x.strip() for x in (stdout.split('\n')) if x.strip()]
-            formatting_left = ['- *']*len(stdout_list)
+            formatting_left = [tab + '- *']*len(stdout_list)
             formatting_right = ['*']*len(stdout_list)
             formatted_stdout = map(lambda (x,y,z): x+y+z, zip(formatting_left, stdout_list, formatting_right))
 
             inner_function_buffer.extend(formatted_stdout)
 
         if not (stderr == '' or stderr == None):
-            inner_function_buffer.append('- **Error:** ' + '*' + str(sterr) + '*')
+            inner_function_buffer.append(tab + '- **Error:** ' + '*' + str(sterr) + '*')
             # stderr_list = (stderr.strip()).split('\n')
             stderr_list = [y.strip() for y in (stderr.split('\n')) if y.strip()]
-            formatting_err_left = ['- *']*len(stderr_list)
+            formatting_err_left = [tab + '- *']*len(stderr_list)
             formatting_err_right = ['*']*len(stderr_list)
             formatted_stderr = map(lambda (x,y,z): x+y+z, zip(formatting_err_left, stderr_list, formatting_err_right))
             inner_function_buffer.extend(formatted_stderr)
@@ -612,7 +612,7 @@ class ErrorLogWriter(object):
 
     def format_command(self, cmd):
         self.verbose_buffer.append('')
-        self.verbose_buffer.append('**' + cmd + '**')
+        self.verbose_buffer.append(tab + '**' + cmd + '**')
 
     def plain_text_output(self, message):
         self.verbose_buffer.append(message)
