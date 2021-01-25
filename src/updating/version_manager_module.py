@@ -365,14 +365,14 @@ class VersionManager(object):
         easycut_version_list = self._get_tag_list('easycut')
         version_manager_version_list = self._get_tag_list('version_manager')
 
-        self.latest_platform_version = str([tag for tag in platform_version_list if "beta" not in tag][0])
-        self.latest_platform_beta = str([tag for tag in platform_version_list if "beta" in tag][0])
+        self.latest_platform_version = str([tag for tag in platform_version_list[1] if "beta" not in tag][0])
+        self.latest_platform_beta = str([tag for tag in platform_version_list[1] if "beta" in tag][0])
 
-        self.latest_easycut_version = str([tag for tag in easycut_version_list if "beta" not in tag][0])
-        self.latest_easycut_beta = str([tag for tag in easycut_version_list if "beta" in tag][0])
+        self.latest_easycut_version = str([tag for tag in easycut_version_list[1] if "beta" not in tag][0])
+        self.latest_easycut_beta = str([tag for tag in easycut_version_list[1] if "beta" in tag][0])
 
-        self.latest_version_manager_version = str([tag for tag in version_manager_version_list if "beta" not in tag][0])
-        self.latest_version_manager_beta = str([tag for tag in version_manager_version_list if "beta" in tag][0])
+        self.latest_version_manager_version = str([tag for tag in version_manager_version_list[1] if "beta" not in tag][0])
+        self.latest_version_manager_beta = str([tag for tag in version_manager_version_list[1] if "beta" in tag][0])
 
 #-------------------------------------------------------------------------------------------------------------------
 
