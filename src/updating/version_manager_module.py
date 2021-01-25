@@ -112,6 +112,7 @@ class VersionManager(object):
         t.start()
 
     def standard_update(self):
+        self.outcome_to_screens('Setting up repositories to get updates from...', subtitle = True)
         self.set_remotes()
         self._clone_backup_repos_from_URL() # if wifi available
 
@@ -592,7 +593,7 @@ class ErrorLogWriter(object):
         if not (stdout == '' or stdout == None):
             inner_function_buffer.append('- **Output:** ')
             stdout_list = [x.strip() for x in (stdout.split('\n')) if x.strip()]
-            formatting_left = [tab + '- *']*len(stdout_list)
+            formatting_left = ['- *']*len(stdout_list)
             formatting_right = ['*']*len(stdout_list)
             formatted_stdout = map(lambda (x,y,z): x+y+z, zip(formatting_left, stdout_list, formatting_right))
 
@@ -602,7 +603,7 @@ class ErrorLogWriter(object):
             inner_function_buffer.append('- **Error:** ' + '*' + str(sterr) + '*')
             # stderr_list = (stderr.strip()).split('\n')
             stderr_list = [y.strip() for y in (stderr.split('\n')) if y.strip()]
-            formatting_err_left = [tab + '- *']*len(stderr_list)
+            formatting_err_left = ['- *']*len(stderr_list)
             formatting_err_right = ['*']*len(stderr_list)
             formatted_stderr = map(lambda (x,y,z): x+y+z, zip(formatting_err_left, stderr_list, formatting_err_right))
             inner_function_buffer.extend(formatted_stderr)
