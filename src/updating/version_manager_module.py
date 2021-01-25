@@ -593,9 +593,9 @@ class ErrorLogWriter(object):
             inner_function_buffer.append(tab + '- **Output:** ')
 
 
-            print(timeit([x.strip() for x in (stdout.split('\n')) if x.strip()]))
+            timeit([x.strip() for x in (stdout.split('\n')) if x.strip()])
 
-            print(timeit(list(filter(lambda item: item.strip(), (stdout.split('\n'))))))
+            timeit(list(filter(lambda item: item.strip(), (stdout.split('\n')))))
 
 
             stdout_list = [x.strip() for x in (stdout.split('\n')) if x.strip()]
