@@ -247,9 +247,7 @@ class VersionManager(object):
         # so get object that has PL/SW: 'vx.x.x'
         temp_matrix = self.version_matrix
         dict_object = filter(lambda platform_version: platform_version['PL-SW'] == PL_version, temp_matrix)[0]
-
-        return
-
+        # this bit worked fine 20 minutes ago.
         # return if compatible
         if dict_object[SW_version] == '1':
             return True
