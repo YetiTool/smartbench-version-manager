@@ -80,9 +80,7 @@ class VersionManager(object):
         start_time = time.time()
         importing_files = False
 
-        def check_connections(dt):
-
-            nonlocal importing_files
+        def check_connections(importing_files):
 
             if self.use_wifi or self.use_usb_remote:
 
@@ -108,9 +106,9 @@ class VersionManager(object):
                 self.usb_stick.disable()
 
             else:
-                Clock.schedule_once(check_connections, 10)
+                Clock.schedule_once(lambda dt: check_connections(importing_files), 10)
 
-        Clock.schedule_once(check_connections, 10)
+        Clock.schedule_once(lambda dt: check_connections(importing_files), 10)
         Clock.schedule_once(lambda dt: self.outcome_to_screens('Looking for internet connection or update file on USB...', subtitle = True), 2)
 
     def start_update_procedure(self, dt):
