@@ -104,12 +104,14 @@ Builder.load_string("""
                     base_font_size: 26
                     underline_color: '333333'
                     colors: root.color_dict
-                    size: (self.size - 20)
+                    size: self.size
                     pos: self.pos
                     do_scroll_x: True
                     scroll_x: 1
                     do_scroll_y: True
                     scroll_type: ['content']
+                    text_size: root.width, None
+                    size: self.texture_size
 
             BoxLayout:
                 size_hint: (None,None)
