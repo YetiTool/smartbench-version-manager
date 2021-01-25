@@ -190,13 +190,13 @@ class USB_storage(object):
             print str(self.run_in_shell("find /media/usb/ -maxdepth 2 -name '*mart*ench*pdate*.zip'")[1])
 
             zipped_file_name = (self.run_in_shell("find /media/usb/ -maxdepth 2 -name '*mart*ench*pdate*.zip'")[1])
-            # print zipped_file_name
+            (print zipped_file_name)
             # zipped_file_name = (os.popen("find /media/usb/ -maxdepth 2 -name 'SmartBench-*pdate*.zip'").read()).strip('\n')
 
             # clear out the remoteCache directory if there's anything in it
-
+            print 'clear out old directory'
             self.run_in_shell('sudo rm ' + remoteCache_path + '* -r')
-            
+            print 'unzip folder'
             unzip_dir_command = 'unzip -f -o ' + zipped_file_name + ' -d ' + remoteCache_path
             self.run_in_shell(unzip_dir_command)
 
