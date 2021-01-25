@@ -19,9 +19,9 @@ import sys, os, subprocess
 usb_remote_path = '/media/usb/'
 remoteCache_path = './remoteCache/'
 
-remote_cache_platform = remote_cache + "console-raspi3b-plus-platform/"
-remote_cache_easycut = remote_cache + "easycut-smartbench/"
-remote_cache_version_manager = remote_cache + "smartbench-version-manager/"
+remote_cache_platform = remoteCache_path + "console-raspi3b-plus-platform/"
+remote_cache_easycut = remoteCache_path + "easycut-smartbench/"
+remote_cache_version_manager = remoteCache_path + "smartbench-version-manager/"
 
 class USB_storage(object):
     
