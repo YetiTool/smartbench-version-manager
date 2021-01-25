@@ -123,24 +123,32 @@ class VersionManager(object):
         self.set_remotes()
         self._clone_backup_repos_from_URL() # if wifi available
 
-        self.el.write_buffer_to_RST()
-        print('Buffer written')
-        return
-
         if self.prepare_for_update():
+            self.outcome_to_screens('Fetching latest versions...', subtitle = True)
             fetch_outcome = self._fetch_tags_for_all_repos()
 
-            self.outcome_to_screens(str(fetch_outcome[1:]))
-
             if fetch_outcome[0]:
+
+                self.outcome_to_screens('Versions fetched.')
 
                 # get latest non-beta versions 
                 self.refresh_latest_versions()
 
+                self.outcome_to_screens('Checking that all versions are compatible...', subtitle = True)
                 # check compatibility
                 if self.compatibility_check(self.latest_platform_version, self.latest_easycut_version):
                     platform_to_checkout = self.latest_platform_version
                     easycut_to_checkout = self.latest_easycut_version
+
+                    self.outcome_to_screens('Updating to versions:')
+                    self.outcome_to_screens('Platform: ' + platform_to_checkout)
+                    self.outcome_to_screens('Software: ' + easycut_to_checkout)
+
+                    # BREAK POINT FOR TESTING 
+                    self.el.write_buffer_to_RST()
+                    print('Buffer written')
+                    return
+
                 else:
                     # compatibility check has failed, need to check which is the latest platform version 
                     # compatibile with the software:
@@ -531,8 +539,7 @@ class VersionManager(object):
             f = os.popen('hostname -I')
             first_info = f.read().strip().split(' ')[0]
             if len(first_info.split('.')) == 4:
-                # self.use_wifi = True
-                self.use_wifi = False
+                self.use_wifi = True
 
             else:
                 self.use_wifi = False
