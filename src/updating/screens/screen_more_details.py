@@ -97,20 +97,20 @@ Builder.load_string("""
                 # ScrollableVerboseOutput:
                 #     id: verbose_ouput
 
-                ScrollView:
-                    size: self.size
-                    pos: self.pos
+                # ScrollView:
+                #     size: self.size
+                #     pos: self.pos
+                #     do_scroll_x: True
+                #     scroll_x: 1
+                #     do_scroll_y: True
+                #     scroll_type: ['content']
+                RstDocument:
+                    id: update_error_log
+                    background_color: hex('#f9f9f9ff')
+                    base_font_size: 26
+                    underline_color: '333333'
+                    colors: root.color_dict
                     do_scroll_x: True
-                    scroll_x: 1
-                    do_scroll_y: True
-                    scroll_type: ['content']
-                    RstDocument:
-                        id: update_error_log
-                        background_color: hex('#f9f9f9ff')
-                        base_font_size: 26
-                        underline_color: '333333'
-                        colors: root.color_dict
-                        do_scroll_x: True
 
             BoxLayout:
                 size_hint: (None,None)
