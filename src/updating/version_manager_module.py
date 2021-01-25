@@ -521,7 +521,9 @@ class VersionManager(object):
             f = os.popen('hostname -I')
             first_info = f.read().strip().split(' ')[0]
             if len(first_info.split('.')) == 4:
-                self.use_wifi = True
+                # self.use_wifi = True
+                self.use_wifi = False
+
             else:
                 self.use_wifi = False
 
