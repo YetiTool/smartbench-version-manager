@@ -257,10 +257,10 @@ class VersionManager(object):
 
     def _find_compatible_platform(self, SW_version):
         # this needs checking
-        dict_object = filter(lambda software_version: software_version[SW_version] == '1', self.version_matrix)[-1]
+        dict_object = filter(lambda software_version: software_version[SW_version] == '1', self.version_matrix)
         print dict_object
-        print 'chosen one'
-        print dict_object['PL-SW']
+        # print 'chosen one'
+        # print dict_object['PL-SW']
 
         return dict_object['PL-SW']
 
