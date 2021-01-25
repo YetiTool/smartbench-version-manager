@@ -250,7 +250,7 @@ class VersionManager(object):
         # this bit worked fine 20 minutes ago.
         # return if compatible
         if dict_object[SW_version] == '1':
-            return True
+            return False
         else:
             return False
 
