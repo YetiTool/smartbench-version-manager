@@ -186,7 +186,7 @@ class USB_storage(object):
             # look for new SB file name first
             # have made this really quite flexible, in case of future preferences!
             print 'read in file name'
-            zipped_file_name = self.run_in_shell("find /media/usb/ -maxdepth 2 -name '*mart*ench*pdate*.zip'")
+            zipped_file_name = (self.run_in_shell("find /media/usb/ -maxdepth 2 -name '*mart*ench*pdate*.zip'")[1]).strip('\n')
             # print zipped_file_name
             # zipped_file_name = (os.popen("find /media/usb/ -maxdepth 2 -name 'SmartBench-*pdate*.zip'").read()).strip('\n')
 
@@ -214,10 +214,7 @@ class USB_storage(object):
 
     def run_in_shell(self, cmd):
 
-        print 'running command'
         self.vm.el.format_command(cmd)
-
-        print cmd
 
         proc = subprocess.Popen(cmd,
             stdout = subprocess.PIPE,
@@ -227,8 +224,6 @@ class USB_storage(object):
 
         stdout, stderr = proc.communicate()
         exit_code = int(proc.returncode)
-
-        print str(stdout)
 
         self.vm.el.format_ouputs(exit_code, stdout, stderr)
 
