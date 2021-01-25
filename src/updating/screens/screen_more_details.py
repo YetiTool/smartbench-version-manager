@@ -138,7 +138,7 @@ class MoreDetailsScreenClass(Screen):
                     'background': 'f9f9f9ff',
                     'link': 'ce5c00ff',
                     'paragraph': '333333ff',
-                    'title': 'f9f9f9ff',
+                    'title': '333333ff',
                     'bullet': 'f9f9f9ff'})
 
     def __init__(self, **kwargs):
