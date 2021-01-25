@@ -370,22 +370,26 @@ class VersionManager(object):
         print platform_version_list[1]
         print 'end of list'
 
-        try: self.latest_platform_version = str([tag for tag in platform_version_list[1] if "beta" not in tag][0])
-        except: self.latest_platform_version = ''
-        try: self.latest_platform_beta = str([tag for tag in platform_version_list[1] if "beta" in tag][0])
-        except: self.latest_platform_beta = ''
+        if platform_version_list[0]:
+            try: self.latest_platform_version = str([tag for tag in platform_version_list[1] if "beta" not in tag][0])
+            except: self.latest_platform_version = ''
 
-        try: self.latest_easycut_version = str([tag for tag in easycut_version_list[1] if "beta" not in tag][0])
-        except: self.latest_easycut_version = ''
+            try: self.latest_platform_beta = str([tag for tag in platform_version_list[1] if "beta" in tag][0])
+            except: self.latest_platform_beta = ''
 
-        try: self.latest_easycut_beta = str([tag for tag in easycut_version_list[1] if "beta" in tag][0])
-        except: self.latest_easycut_beta = ''
+        if easycut_version_list[0]:
+            try: self.latest_easycut_version = str([tag for tag in easycut_version_list[1] if "beta" not in tag][0])
+            except: self.latest_easycut_version = ''
 
-        try: self.latest_version_manager_version = str([tag for tag in version_manager_version_list[1] if "beta" not in tag][0])
-        except: self.latest_version_manager_version = ''
+            try: self.latest_easycut_beta = str([tag for tag in easycut_version_list[1] if "beta" in tag][0])
+            except: self.latest_easycut_beta = ''
 
-        try: self.latest_version_manager_beta = str([tag for tag in version_manager_version_list[1] if "beta" in tag][0])
-        except: self.latest_version_manager_beta = ''
+        if version_manager_version_list[0]:
+            try: self.latest_version_manager_version = str([tag for tag in version_manager_version_list[1] if "beta" not in tag][0])
+            except: self.latest_version_manager_version = ''
+
+            try: self.latest_version_manager_beta = str([tag for tag in version_manager_version_list[1] if "beta" in tag][0])
+            except: self.latest_version_manager_beta = ''
 
 #-------------------------------------------------------------------------------------------------------------------
 
@@ -431,7 +435,7 @@ class VersionManager(object):
     ## return list of 10 most recent tags
 
     def _get_tag_list(self, repo):
-        return self.run_in_shell(repo, 'git tag --list "v-*" --sort version:refname |head -n 10')
+        return self.run_in_shell(repo, 'git tag --list "v*" --sort -version:refname |head -n 10')
 
     ### DEBUGGING
 
