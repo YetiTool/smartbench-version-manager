@@ -103,7 +103,7 @@ class VersionManager(object):
                 Clock.schedule_once(check_connections, 10)
 
         Clock.schedule_once(check_connections, 10)
-        Clock.schedule_once(lambda dt: self.outcome_to_screens('Looking for internet connection or update file on USB...'), 2)
+        Clock.schedule_once(lambda dt: self.outcome_to_screens('Looking for internet connection or update file on USB...', subtitle = True), 2)
 
     def start_update_procedure(self, dt):
         # starting it on a separate thread so that the process doesn't interfere with screen updates
@@ -567,11 +567,11 @@ class VersionManager(object):
 
         return [bool_out, stdout, stderr]
 
-    def outcome_to_screens(self, message):
+    def outcome_to_screens(self, message, subtitle=False):
         self.sm.get_screen('updating').add_to_user_friendly_buffer(message)
         # self.sm.get_screen('more_details').add_to_verbose_buffer(message)
-        self.el.add_subtitle(message)
-
+        if subtitle == True: self.el.add_subtitle(message)
+        else: self.el.plain_text_output(message)
 
 class ErrorLogWriter(object):
 
@@ -587,10 +587,10 @@ class ErrorLogWriter(object):
     def format_ouputs(self, exit_code, stdout, stderr):
 
         inner_function_buffer = []
-        inner_function_buffer.append(tab + '- **Exit code:** ' + '*' + str(exit_code) + '*')
+        inner_function_buffer.append('- **Exit code:** ' + '*' + str(exit_code) + '*')
 
         if not (stdout == '' or stdout == None):
-            inner_function_buffer.append(tab + '- **Output:** ')
+            inner_function_buffer.append('- **Output:** ')
             stdout_list = [x.strip() for x in (stdout.split('\n')) if x.strip()]
             formatting_left = [tab + '- *']*len(stdout_list)
             formatting_right = ['*']*len(stdout_list)
@@ -599,7 +599,7 @@ class ErrorLogWriter(object):
             inner_function_buffer.extend(formatted_stdout)
 
         if not (stderr == '' or stderr == None):
-            inner_function_buffer.append(tab + '- **Error:** ' + '*' + str(sterr) + '*')
+            inner_function_buffer.append('- **Error:** ' + '*' + str(sterr) + '*')
             # stderr_list = (stderr.strip()).split('\n')
             stderr_list = [y.strip() for y in (stderr.split('\n')) if y.strip()]
             formatting_err_left = [tab + '- *']*len(stderr_list)
@@ -612,6 +612,9 @@ class ErrorLogWriter(object):
     def format_command(self, cmd):
         self.verbose_buffer.append('')
         self.verbose_buffer.append('**' + cmd + '**')
+
+    def plain_text_output(self, message):
+        self.verbose_buffer.append(message)
 
     def write_buffer_to_RST(self):
         with open('./update_error_log.txt', 'w') as filehandle:
