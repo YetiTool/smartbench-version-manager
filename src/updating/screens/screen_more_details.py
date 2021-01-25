@@ -111,7 +111,7 @@ Builder.load_string("""
                     do_scroll_y: True
                     scroll_type: ['content']
                     text_size: root.width, None
-                    size: self.texture_size
+
 
             BoxLayout:
                 size_hint: (None,None)
