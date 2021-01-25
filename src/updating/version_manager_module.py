@@ -241,11 +241,11 @@ class VersionManager(object):
     # component compatibility functions
     def _load_matrix(self):
         self.version_matrix = csv.DictReader(open(version_matrix_file), delimiter = '\t')
-        # reads in as: 'PL\SW': 'v0.1.1', 'v0.0.1': '1', 'v0.0.2': '1', ... etc.
+        # reads in as: 'PL-SW': 'v0.1.1', 'v0.0.1': '1', 'v0.0.2': '1', ... etc.
 
     def _check_compatibility(self, PL_version, SW_version):
         # so get object that has PL/SW: 'vx.x.x'
-        dict_object = filter(lambda platform_version: platform_version['PL-SW'] == PL_version, self.version_matrix)
+        dict_object = filter(lambda platform_version: platform_version['PL-SW'] == PL_version, self.version_matrix)[1]
         print dict_object
         return
 
@@ -390,6 +390,11 @@ class VersionManager(object):
 
             try: self.latest_version_manager_beta = str([tag for tag in version_manager_version_list[1] if "beta" in tag][0])
             except: self.latest_version_manager_beta = ''
+
+
+        print self.latest_platform_version
+        print self.latest_easycut_version
+        print self.latest_version_manager_version
 
 #-------------------------------------------------------------------------------------------------------------------
 
