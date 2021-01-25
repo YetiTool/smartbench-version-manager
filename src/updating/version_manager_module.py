@@ -368,10 +368,9 @@ class VersionManager(object):
         version_manager_version_list = self._get_tag_list('version_manager')
 
         print platform_version_list[1]
-        print 'end of list'
 
         if platform_version_list[0]:
-            try: self.latest_platform_version = str([tag for tag in platform_version_list[1] if "beta" not in tag][0])
+            try: self.latest_platform_version = str([tag for tag in platform_version_list[1] if "beta" not in tag])
             except: self.latest_platform_version = ''
 
             try: self.latest_platform_beta = str([tag for tag in platform_version_list[1] if "beta" in tag][0])
