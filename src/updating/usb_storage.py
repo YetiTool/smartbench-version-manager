@@ -223,6 +223,10 @@ class USB_storage(object):
         stdout, stderr = proc.communicate()
         exit_code = int(proc.returncode)
 
+        print(str(exit_code))
+        print(str(stdout))
+        print(str(stderr))
+
         self.vm.el.format_ouputs(exit_code, stdout, stderr)
 
         if exit_code == 0:
