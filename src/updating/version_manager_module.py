@@ -370,7 +370,7 @@ class VersionManager(object):
         print platform_version_list[1]
 
         if platform_version_list[0]:
-            try: self.latest_platform_version = str([tag for tag in (platform_version_list[1]).split('\n') if "beta" not in tag])
+            try: self.latest_platform_version = str([tag for tag in (platform_version_list[1]).split('\n') if "beta" not in tag][0])
             except: self.latest_platform_version = ''
 
             try: self.latest_platform_beta = str([tag for tag in (platform_version_list[1]).split('\n') if "beta" in tag][0])
