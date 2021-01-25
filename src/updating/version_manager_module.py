@@ -246,7 +246,7 @@ class VersionManager(object):
     def _check_compatibility(self, PL_version, SW_version):
         # so get object that has PL/SW: 'vx.x.x'
         dict_object = filter(lambda platform_version: platform_version['PL-SW'] == PL_version, self.version_matrix)[0]
-        print dict_object
+
         return
 
         # return if compatible
@@ -258,6 +258,10 @@ class VersionManager(object):
     def _find_compatible_platform(self, SW_version):
         # this needs checking
         dict_object = filter(lambda software_version: software_version[SW_version] == '1', self.version_matrix)[-1]
+        print dict_object
+        print 'chosen one'
+        print dict_object['PL-SW']
+
         return dict_object['PL-SW']
 
 
