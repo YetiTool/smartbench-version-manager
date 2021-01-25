@@ -110,7 +110,7 @@ Builder.load_string("""
                     scroll_x: 0
                     do_scroll_y: True
                     scroll_type: ['content']
-                    text_size: root.width, None
+                    text_size: root.width - 20, None
 
 
             BoxLayout:
