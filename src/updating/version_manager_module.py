@@ -609,12 +609,12 @@ class ErrorLogWriter(object):
 
     def format_command(self, cmd):
         wrapped_cmd = textwrap.wrap(cmd, break_long_words=False)
-        formatting_left = ['*']*len(wrapped_cmd)
-        formatting_right = ['*']*len(wrapped_cmd)
+        formatting_left = ['**']*len(wrapped_cmd)
+        formatting_right = ['**']*len(wrapped_cmd)
         formatted_cmd = map(lambda (x,y,z): x+y+z, zip(formatting_left, wrapped_cmd, formatting_right))
 
         self.verbose_buffer.append('')
-        self.verbose_buffer.extend('**' + formatted_cmd + '**')
+        self.verbose_buffer.extend(formatted_cmd)
 
     def plain_text_output(self, message):
         self.verbose_buffer.append(message)
