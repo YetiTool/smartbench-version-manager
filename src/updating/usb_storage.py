@@ -13,7 +13,7 @@ WARNINGS:
 '''
 
 from kivy.clock import Clock
-import sys, os
+import sys, os, subprocess
 
 
 usb_remote_path = '/media/usb/'
@@ -187,7 +187,7 @@ class USB_storage(object):
             # have made this really quite flexible, in case of future preferences!
             print 'read in file name'
             zipped_file_name = self.run_in_shell("find /media/usb/ -maxdepth 2 -name '*mart*ench*pdate*.zip'")
-            print zipped_file_name
+            # print zipped_file_name
             # zipped_file_name = (os.popen("find /media/usb/ -maxdepth 2 -name 'SmartBench-*pdate*.zip'").read()).strip('\n')
 
             # clear out the remoteCache directory if there's anything in it
@@ -214,7 +214,10 @@ class USB_storage(object):
 
     def run_in_shell(self, cmd):
 
+        print 'running command'
         self.vm.el.format_command(cmd)
+
+        print cmd
 
         proc = subprocess.Popen(cmd,
             stdout = subprocess.PIPE,
@@ -224,6 +227,8 @@ class USB_storage(object):
 
         stdout, stderr = proc.communicate()
         exit_code = int(proc.returncode)
+
+        print str(stdout)
 
         self.vm.el.format_ouputs(exit_code, stdout, stderr)
 
