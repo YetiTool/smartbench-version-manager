@@ -612,7 +612,7 @@ class ErrorLogWriter(object):
 
     def format_command(self, cmd):
         self.verbose_buffer.append('')
-        self.verbose_buffer.append(tab + '**' + cmd + '**')
+        self.verbose_buffer.append('**' + cmd + '**')
 
     def plain_text_output(self, message):
         self.verbose_buffer.append(message)
