@@ -90,7 +90,7 @@ Builder.load_string("""
                 size_hint: (None,None)
                 width: dp(780)
                 height: dp(320)
-                padding: 20
+                # padding: 20
                 spacing: 0
                 orientation: 'horizontal'
 
@@ -106,8 +106,8 @@ Builder.load_string("""
                     colors: root.color_dict
                     size: self.size
                     pos: self.pos
-                    do_scroll_x: True
-                    scroll_x: 1
+                    do_scroll_x: False
+                    scroll_x: 0
                     do_scroll_y: True
                     scroll_type: ['content']
                     text_size: root.width, None
