@@ -186,7 +186,7 @@ class USB_storage(object):
             # look for new SB file name first
             # have made this really quite flexible, in case of future preferences!
             print 'read in file name'
-            zipped_file_name = (self.run_in_shell("find /media/usb/ -maxdepth 2 -name '*mart*ench*pdate*.zip'")[1]).strip('\n')
+            zipped_file_name = self.run_in_shell("find /media/usb/ -maxdepth 2 -name '*mart*ench*pdate*.zip'")
             print zipped_file_name
             # zipped_file_name = (os.popen("find /media/usb/ -maxdepth 2 -name 'SmartBench-*pdate*.zip'").read()).strip('\n')
 
