@@ -1,6 +1,8 @@
 import csv, threading, time
 import subprocess, sys, os
 
+from timeit import timeit
+
 from time import sleep
 from kivy.clock import Clock
 
@@ -588,8 +590,14 @@ class ErrorLogWriter(object):
         inner_function_buffer.append(tab + '- **Exit code:** ' + '*' + str(exit_code) + '*')
 
         if not (stdout == '' or stdout == None):
-            inner_function_buffer.append(tab + '- **Output:** ')    
-            stdout_list = (stdout.strip()).split('\n')
+            inner_function_buffer.append(tab + '- **Output:** ')
+
+
+            print(timeit(stdout_list = [x.strip() for x in (stdout.split('\n')) if x.strip()]))
+
+            print(timeit(stdout_list = list(filter(lambda item: item.strip(), (stdout.split('\n'))))))
+
+
             formatting_left = [tab + '- *']*len(stdout_list)
             formatting_right = ['*']*len(stdout_list)
             formatted_stdout = map(lambda (x,y,z): x+y+z, zip(formatting_left, stdout_list, formatting_right))
