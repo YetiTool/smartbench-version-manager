@@ -576,7 +576,7 @@ class VersionManager(object):
 
 class ErrorLogWriter(object):
 
-    verbose_buffer = []
+    verbose_buffer = ['====', '1234', '====', '    ']
 
     def __init__(self):
         pass

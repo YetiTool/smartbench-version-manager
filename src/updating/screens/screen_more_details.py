@@ -137,8 +137,8 @@ class MoreDetailsScreenClass(Screen):
     color_dict = DictProperty({
                     'background': 'f9f9f9ff',
                     'link': 'ce5c00ff',
-                    'paragraph': '202020ff',
-                    'title': '333333ff',
+                    'paragraph': '333333ff',
+                    'title': 'f9f9f9ff',
                     'bullet': 'f9f9f9ff'})
 
     def __init__(self, **kwargs):
