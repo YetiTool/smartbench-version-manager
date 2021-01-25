@@ -573,7 +573,7 @@ class VersionManager(object):
 
 class ErrorLogWriter(object):
 
-    verbose_buffer = []
+    verbose_buffer = ['===============================']
 
     def __init__(self):
         pass
@@ -582,24 +582,27 @@ class ErrorLogWriter(object):
         title_list = [subtitle, len(subtitle)*'-']
         self.verbose_buffer.extend(title_list)
 
-    def format_ouputs(self, exit_code, stdout, sterr):
+    def format_ouputs(self, exit_code, stdout, stderr):
 
         inner_function_buffer = []
         inner_function_buffer.append(tab + '- **Exit code:** ' + '*' + str(exit_code) + '*')
-        inner_function_buffer.append(tab + '- **Output:** ')
+
         if not (stdout == '' or stdout == None):
-            
+            inner_function_buffer.append(tab + '- **Output:** ')    
             stdout_list = (stdout.strip()).split('\n')
             formatting_left = [tab + '- *']*len(stdout_list)
             formatting_right = ['*']*len(stdout_list)
-
             formatted_stdout = map(lambda (x,y,z): x+y+z, zip(formatting_left, stdout_list, formatting_right))
 
             inner_function_buffer.extend(formatted_stdout)
 
-        if not (sterr == '' or sterr == None):
+        if not (stderr == '' or stderr == None):
             inner_function_buffer.append(tab + '- **Error:** ' + '*' + str(sterr) + '*')
-        # inner_function_buffer.append('')
+            stderr_list = (stderr.strip()).split('\n')
+            formatting_err_left = [tab + '- *']*len(stderr_list)
+            formatting_err_right = ['*']*len(stderr_list)
+            formatted_stderr = map(lambda (x,y,z): x+y+z, zip(formatting_err_left, stderr_list, formatting_err_right))
+            inner_function_buffer.extend(formatted_stderr)
 
         self.verbose_buffer.extend(inner_function_buffer)
 
