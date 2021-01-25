@@ -593,11 +593,12 @@ class ErrorLogWriter(object):
             inner_function_buffer.append(tab + '- **Output:** ')
 
 
-            print(timeit(stdout_list = [x.strip() for x in (stdout.split('\n')) if x.strip()]))
+            print(timeit([x.strip() for x in (stdout.split('\n')) if x.strip()]))
 
-            print(timeit(stdout_list = list(filter(lambda item: item.strip(), (stdout.split('\n'))))))
+            print(timeit(list(filter(lambda item: item.strip(), (stdout.split('\n'))))))
 
 
+            stdout_list = [x.strip() for x in (stdout.split('\n')) if x.strip()]
             formatting_left = [tab + '- *']*len(stdout_list)
             formatting_right = ['*']*len(stdout_list)
             formatted_stdout = map(lambda (x,y,z): x+y+z, zip(formatting_left, stdout_list, formatting_right))
