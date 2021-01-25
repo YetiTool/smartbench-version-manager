@@ -399,10 +399,11 @@ class VersionManager(object):
         # tries twice, just on the off-chance that there's a brief loss of connection or similar
         success = self.run_in_shell(repo, 'git fetch --all -t')
         if success[0]: 
-            return_success
+            return success
         else:
             sleep(10)
-            self.run_in_shell(repo, 'git fetch --all -t')
+            second_try = self.run_in_shell(repo, 'git fetch --all -t')
+            return second_try
 
     ## fetch tags for all repositories
 
