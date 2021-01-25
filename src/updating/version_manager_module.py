@@ -584,7 +584,7 @@ class ErrorLogWriter(object):
 
     def format_ouputs(self, exit_code, stdout, stderr):
 
-        inner_function_buffer = []
+        inner_function_buffer = ['']
         inner_function_buffer.append(tab + '- **Exit code:** ' + '*' + str(exit_code) + '*')
 
         if not (stdout == '' or stdout == None):
