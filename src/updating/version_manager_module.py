@@ -88,7 +88,7 @@ class VersionManager(object):
                 if self.use_usb_remote: self.outcome_to_screens('Update file found on USB')
                 self.start_update_procedure(self)
 
-            elif self.usb_stick.is_available() and importing_files == False:
+            elif (self.usb_stick.is_available() and importing_files == False):
                 importing_files = True
                 self.usb_stick.import_remotes_from_usb()
                 importing_files = False
