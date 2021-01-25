@@ -94,6 +94,7 @@ class VersionManager(object):
                 self.usb_stick.import_remotes_from_usb()
                 importing_files = False
                 self.usb_stick.disable()
+                Clock.schedule_once(lambda dt: check_connections(importing_files), 10)
 
             elif time.time() > (start_time + 61):
 
