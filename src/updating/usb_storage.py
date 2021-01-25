@@ -190,9 +190,9 @@ class USB_storage(object):
 
             # clear out the remoteCache directory if there's anything in it
             print 'clear out old directory'
-            self.run_in_shell('sudo rm ' + remoteCache_path + '* -r')
+            if os.path.exists(remoteCache_path + '*/'): self.run_in_shell('sudo rm ' + remoteCache_path + '*/ -r')
             print 'unzip folder'
-            unzip_dir_command = 'unzip -f -o ' + zipped_file_name + ' -d ' + remoteCache_path
+            unzip_dir_command = 'unzip -o ' + zipped_file_name + ' -d ' + remoteCache_path
             self.run_in_shell(unzip_dir_command)
 
             # find all the repos in the remoteCache path and if they are there, return true, OR set flag in vm.
