@@ -368,6 +368,7 @@ class VersionManager(object):
         version_manager_version_list = self._get_tag_list('version_manager')
 
         print platform_version_list[1]
+        print 'end of list'
 
         try: self.latest_platform_version = str([tag for tag in platform_version_list[1] if "beta" not in tag][0])
         except: self.latest_platform_version = ''
@@ -430,7 +431,7 @@ class VersionManager(object):
     ## return list of 10 most recent tags
 
     def _get_tag_list(self, repo):
-        return self.run_in_shell(repo, 'git tag --sort=-refname |head -n 10')
+        return self.run_in_shell(repo, 'git tag --list 'v-*' --sort version:refname |head -n 10')
 
     ### DEBUGGING
 
