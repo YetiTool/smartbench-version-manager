@@ -361,9 +361,9 @@ class VersionManager(object):
     ## FETCH TAGS AND CHECKOUT 
     def refresh_latest_versions(self):
 
-        platform_version_list = bash('get_tag_list platform')
-        easycut_version_list = bash('get_tag_list easycut')
-        version_manager_version_list = bash('get_tag_list version_manager')
+        platform_version_list = _get_tag_list('platform')
+        easycut_version_list = _get_tag_list('easycut')
+        version_manager_version_list = _get_tag_list('version_manager')
 
         self.latest_platform_version = str([tag for tag in platform_version_list if "beta" not in tag][0])
         self.latest_platform_beta = str([tag for tag in platform_version_list if "beta" in tag][0])
