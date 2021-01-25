@@ -591,13 +591,6 @@ class ErrorLogWriter(object):
 
         if not (stdout == '' or stdout == None):
             inner_function_buffer.append(tab + '- **Output:** ')
-
-
-            timeit([x.strip() for x in (stdout.split('\n')) if x.strip()])
-
-            timeit(list(filter(lambda item: item.strip(), (stdout.split('\n')))))
-
-
             stdout_list = [x.strip() for x in (stdout.split('\n')) if x.strip()]
             formatting_left = [tab + '- *']*len(stdout_list)
             formatting_right = ['*']*len(stdout_list)
@@ -607,7 +600,8 @@ class ErrorLogWriter(object):
 
         if not (stderr == '' or stderr == None):
             inner_function_buffer.append(tab + '- **Error:** ' + '*' + str(sterr) + '*')
-            stderr_list = (stderr.strip()).split('\n')
+            # stderr_list = (stderr.strip()).split('\n')
+            stderr_list = [y.strip() for y in (stderr.split('\n')) if y.strip()]
             formatting_err_left = [tab + '- *']*len(stderr_list)
             formatting_err_right = ['*']*len(stderr_list)
             formatted_stderr = map(lambda (x,y,z): x+y+z, zip(formatting_err_left, stderr_list, formatting_err_right))
