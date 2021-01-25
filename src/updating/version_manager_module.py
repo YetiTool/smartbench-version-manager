@@ -431,7 +431,7 @@ class VersionManager(object):
     ## return list of 10 most recent tags
 
     def _get_tag_list(self, repo):
-        return self.run_in_shell(repo, 'git tag --list 'v-*' --sort version:refname |head -n 10')
+        return self.run_in_shell(repo, 'git tag --list "v-*" --sort version:refname |head -n 10')
 
     ### DEBUGGING
 
