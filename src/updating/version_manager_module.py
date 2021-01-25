@@ -245,7 +245,9 @@ class VersionManager(object):
 
     def _check_compatibility(self, PL_version, SW_version):
         # so get object that has PL/SW: 'vx.x.x'
-        dict_object = filter(lambda platform_version: platform_version['PL-SW'] == PL_version, self.version_matrix)[0]
+        dict_object = filter(lambda platform_version: platform_version['PL-SW'] == PL_version, self.version_matrix)
+        print dict_object
+        return
 
         # return if compatible
         if dict_object[SW_version] == '1':
@@ -364,6 +366,8 @@ class VersionManager(object):
         platform_version_list = self._get_tag_list('platform')
         easycut_version_list = self._get_tag_list('easycut')
         version_manager_version_list = self._get_tag_list('version_manager')
+
+        print platform_version_list[1]
 
         try: self.latest_platform_version = str([tag for tag in platform_version_list[1] if "beta" not in tag][0])
         except: self.latest_platform_version = ''
