@@ -181,10 +181,11 @@ class USB_storage(object):
 
     def import_remotes_from_usb(self):
 
+        print 'start import function'
         try:
             # look for new SB file name first
             # have made this really quite flexible, in case of future preferences!
-            
+            print 'read in file name'
             zipped_file_name = ((self.run_in_shell("find /media/usb/ -maxdepth 2 -name '*mart*ench*pdate*.zip'"))[1]).strip('\n')
             # zipped_file_name = (os.popen("find /media/usb/ -maxdepth 2 -name 'SmartBench-*pdate*.zip'").read()).strip('\n')
 
@@ -206,6 +207,8 @@ class USB_storage(object):
                 self.vm.use_usb_remote =  False
 
         except:
+            print "instant fail"
+
             self.vm.use_usb_remote =  False
 
     def run_in_shell(self, cmd):
