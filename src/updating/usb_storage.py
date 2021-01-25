@@ -17,7 +17,7 @@ import sys, os, subprocess
 
 
 usb_remote_path = '/media/usb/'
-remote_cache = './remoteCache/'
+remoteCache_path = './remoteCache/'
 
 remote_cache_platform = remote_cache + "console-raspi3b-plus-platform/"
 remote_cache_easycut = remote_cache + "easycut-smartbench/"
@@ -28,8 +28,6 @@ class USB_storage(object):
     # Default paths
     windows_usb_path = "E:\\" 
     linux_usb_path = "/media/usb/"
-
-    remoteCache_path = './remoteCache/'
 
     # For debug
     IS_USB_VERBOSE = True
@@ -186,11 +184,8 @@ class USB_storage(object):
             # look for new SB file name first
             # have made this really quite flexible, in case of future preferences!
             print 'read in file name'
-            print str(self.run_in_shell("find /media/usb/ -maxdepth 2 -name '*mart*ench*pdate*.zip'")[0])
-            print str(self.run_in_shell("find /media/usb/ -maxdepth 2 -name '*mart*ench*pdate*.zip'")[1])
 
-            zipped_file_name = (self.run_in_shell("find /media/usb/ -maxdepth 2 -name '*mart*ench*pdate*.zip'")[1])
-            print (zipped_file_name)
+            zipped_file_name = (self.run_in_shell("find /media/usb/ -maxdepth 2 -name '*mart*ench*pdate*.zip'")[1]).strip('\n')
             # zipped_file_name = (os.popen("find /media/usb/ -maxdepth 2 -name 'SmartBench-*pdate*.zip'").read()).strip('\n')
 
             # clear out the remoteCache directory if there's anything in it
