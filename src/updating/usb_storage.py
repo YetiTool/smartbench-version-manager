@@ -32,7 +32,7 @@ class USB_storage(object):
     remoteCache_path = './remoteCache/'
 
     # For debug
-    IS_USB_VERBOSE = False
+    IS_USB_VERBOSE = True
     
     poll_usb_event = None
     mount_event = None
@@ -51,6 +51,7 @@ class USB_storage(object):
             self.usb_path = self.linux_usb_path
 
     def enable(self):
+        print 'enable usb'
         if self.stick_enabled != True:
             self.start_polling_for_usb()
             self.stick_enabled = True
@@ -184,7 +185,6 @@ class USB_storage(object):
             # look for new SB file name first
             # have made this really quite flexible, in case of future preferences!
             zipped_file_name = ((self.run_in_shell("find /media/usb/ -maxdepth 2 -name '*mart*ench*pdate*.zip'"))[1]).strip('\n')
-
             # zipped_file_name = (os.popen("find /media/usb/ -maxdepth 2 -name 'SmartBench-*pdate*.zip'").read()).strip('\n')
 
             # clear out the remoteCache directory if there's anything in it
@@ -220,6 +220,10 @@ class USB_storage(object):
         exit_code = int(proc.returncode)
 
         self.vm.el.format_ouputs(exit_code, stdout, stderr)
+
+        print str(exit_code)
+        print stdout
+        print stderr
 
         if exit_code == 0:
             bool_out = True
