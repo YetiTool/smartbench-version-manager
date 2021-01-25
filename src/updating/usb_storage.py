@@ -183,13 +183,16 @@ class USB_storage(object):
         try:
             # look for new SB file name first
             # have made this really quite flexible, in case of future preferences!
-            zipped_file_name = (os.popen("find /media/usb/ -maxdepth 2 -name 'SmartBench-*pdate*.zip'").read()).strip('\n')
+            zipped_file_name = ((self.run_in_shell("find /media/usb/ -maxdepth 2 -name 'SmartBench-*pdate*.zip'"))[1]).strip('\n')
+
+            # zipped_file_name = (os.popen("find /media/usb/ -maxdepth 2 -name 'SmartBench-*pdate*.zip'").read()).strip('\n')
 
             # clear out the remoteCache directory if there's anything in it
-            os.system('sudo rm ' + remoteCache_path + '* -r')
+
+            self.run_in_shell('sudo rm ' + remoteCache_path + '* -r')
             
             unzip_dir_command = 'unzip -f -o ' + zipped_file_name + ' -d ' + remoteCache_path
-            os.system(unzip_dir_command) # replace these with run_in_shell function for better processing
+            self.run_in_shell(unzip_dir_command)
 
             # find all the repos in the remoteCache path and if they are there, return true, OR set flag in vm.
             if (os.path.exists(remote_cache_platform) and
@@ -202,3 +205,25 @@ class USB_storage(object):
 
         except:
             self.vm.use_usb_remote =  False
+
+    def run_in_shell(self, cmd):
+
+        self.vm.el.format_command(cmd)
+
+        proc = subprocess.Popen(cmd,
+            stdout = subprocess.PIPE,
+            stderr = subprocess.STDOUT,
+            shell = True
+        )
+
+        stdout, stderr = proc.communicate()
+        exit_code = int(proc.returncode)
+
+        self.vm.el.format_ouputs(exit_code, stdout, stderr)
+
+        if exit_code == 0:
+            bool_out = True
+        else:
+            bool_out = False
+
+        return [bool_out, stdout, stderr]
