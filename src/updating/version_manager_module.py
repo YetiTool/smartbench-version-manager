@@ -78,6 +78,7 @@ class VersionManager(object):
     def set_up_connections(self):
         # ensure wifi is connected, or copy update files from USB stick
         start_time = time.time()
+        importing_files = False
 
         def check_connections(dt):
 
@@ -87,6 +88,12 @@ class VersionManager(object):
                 if self.use_usb_remote: self.outcome_to_screens('Update file found on USB')
                 self.start_update_procedure(self)
 
+            elif self.usb_stick.is_available() and importing_files == False:
+                importing_files = True
+                self.usb_stick.import_remotes_from_usb()
+                importing_files = False
+                self.usb_stick.disable()
+
             elif time.time() > (start_time + 61):
 
                 support_message = 'Could not access updates from internet connection or USB drive...' + \
@@ -95,6 +102,7 @@ class VersionManager(object):
                 'YetiTool Support at https://www.yetitool.com/SUPPORT'
 
                 self.outcome_to_screens(support_message)
+                self.usb_stick.disable()
 
             else:
                 Clock.schedule_once(check_connections, 10)

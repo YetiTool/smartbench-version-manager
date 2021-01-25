@@ -158,13 +158,7 @@ class USB_storage(object):
         mount_command = "echo posys | sudo mount /dev/" + device + "1 " + self.linux_usb_path # TODO: NOT SECURE
         try:
             os.system(mount_command)
-            
             self.is_usb_mounted_flag = True
-
-            # here add in function to copy the update files across, because after that we can unmount straight away?
-            # and then rather than doing a check as to whether usb is present, we check whether there are folders in the remoteCache
-            self.import_remotes_from_usb()
-
             self.start_polling_for_usb() # restart checking for USB
             if self.IS_USB_VERBOSE: print 'USB: MOUNTED'
 
@@ -200,7 +194,6 @@ class USB_storage(object):
                 os.path.exists(remote_cache_easycut) and
                 os.path.exists(remote_cache_version_manager)):
                 self.vm.use_usb_remote =  True
-                self.disable()
 
             else:
                 self.vm.use_usb_remote =  False
