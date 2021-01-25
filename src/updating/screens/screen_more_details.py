@@ -88,7 +88,7 @@ Builder.load_string("""
 
             BoxLayout:
                 size_hint: (None,None)
-                width: dp(780)
+                width: dp(760)
                 height: dp(320)
                 padding: 20
                 spacing: 0
@@ -97,25 +97,19 @@ Builder.load_string("""
                 # ScrollableVerboseOutput:
                 #     id: verbose_ouput
 
-                ScrollView:
+
+                RstDocument:
+                    id: update_error_log
+                    background_color: hex('#f9f9f9ff')
+                    base_font_size: 26
+                    underline_color: '333333'
+                    colors: root.color_dict
                     size: self.size
                     pos: self.pos
                     do_scroll_x: True
                     scroll_x: 1
                     do_scroll_y: True
                     scroll_type: ['content']
-                    RstDocument:
-                        id: update_error_log
-                        background_color: hex('#f9f9f9ff')
-                        base_font_size: 26
-                        underline_color: '333333'
-                        colors: root.color_dict
-                        size: self.size
-                        pos: self.pos
-                        do_scroll_x: False
-                        scroll_x: 1
-                        do_scroll_y: False
-                        scroll_type: ['content']
 
             BoxLayout:
                 size_hint: (None,None)
