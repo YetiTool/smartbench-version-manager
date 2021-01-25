@@ -82,6 +82,8 @@ class VersionManager(object):
 
         def check_connections(dt):
 
+            nonlocal importing_files
+
             if self.use_wifi or self.use_usb_remote:
 
                 if self.use_wifi: self.outcome_to_screens('Wifi connection found.')
@@ -89,7 +91,7 @@ class VersionManager(object):
                 self.start_update_procedure(self)
 
             elif (self.usb_stick.is_available() and importing_files == False):
-                nonlocal importing_files
+
                 importing_files = True
                 self.usb_stick.import_remotes_from_usb()
                 importing_files = False
