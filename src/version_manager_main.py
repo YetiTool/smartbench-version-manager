@@ -36,7 +36,7 @@ class SBVersionManagerUI(App):
         sm.current = 'updating'
 
         if sys.platform != 'win32' and sys.platform != 'darwin':
-            vm.set_up_connections()
+            vm.start_version_manager()
 
         return sm
 

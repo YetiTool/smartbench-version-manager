@@ -7,6 +7,7 @@ from updating import usb_storage
 
 version_matrix_file = './versions/platform-software-matrix.txt'
 
+
 usb_remote_path = '/media/usb/'
 remote_cache = './remoteCache/'
 
@@ -36,6 +37,8 @@ home_dir="/home/pi/"
 easycut_path = home_dir + "easycut-smartbench/"
 platform_path = home_dir + "console-raspi3b-plus-platform/"
 version_manager_path = home_dir + "smartbench-version-manager/"
+original_update_version_manager_script = version_manager_path + 'src/updating/update_version_manager_script.sh'
+copied_update_version_manager_script = home_dir + 'update_version_manager_script.sh'
 
 ### FORMATTING
 tab = '\t'
@@ -51,8 +54,10 @@ class VersionManager(object):
     latest_platform_beta = ''
     latest_easycut_version = ''
     latest_easycut_beta = ''
-    latest_version_manager_version = ''
+    latest_version_manager_version = default_version_manager_version
     latest_version_manager_beta = ''
+
+    default_version_manager_version = 'first_draft' # using for dev
 
     use_usb_remote = False
     use_wifi = False
@@ -75,6 +80,26 @@ class VersionManager(object):
         # Simplify what update we look for from now on: Standardize update packages from version x.x.x onwards to look for 
         # SmartBench-SW-update...zip, and then unpack that to find git repo zips, and then unpack those accordingly.
 
+    def start_version_manager(self):
+
+        # if recent history shows that latest version manager has been checked out, skip set up connections
+        # and instead go straight to start_update_procedure
+
+        history_command = 'history | tail -n 5'
+        list_of_prev_commands = self.run_in_shell('home', history_command)
+
+        checkout_command == 'git checkout -f ' + self.latest_version_manager_version
+        if any(checkout_command in s for s in list_of_prev_commands):
+            # otherwise, set up connections and then do update version_manager
+            self.start_update_procedure()
+
+        else:
+            self.set_up_connections() # this also makes the call to update version manager
+
+        # need to also do this check for beta version
+        # self.start_update_procedure()
+
+
     def set_up_connections(self):
         # ensure wifi is connected, or copy update files from USB stick
         start_time = time.time()
@@ -86,7 +111,7 @@ class VersionManager(object):
 
                 if self.use_wifi: self.outcome_to_screens('Wifi connection found.')
                 if self.use_usb_remote: self.outcome_to_screens('Update file found on USB')
-                self.start_update_procedure(self)
+                self.update_version_manager()
 
             elif (self.usb_stick.is_available() and importing_files == False):
 
@@ -112,7 +137,55 @@ class VersionManager(object):
         Clock.schedule_once(lambda dt: check_connections(importing_files), 10)
         Clock.schedule_once(lambda dt: self.outcome_to_screens('Looking for internet connection or update file on USB...', subtitle = True), 2)
 
+
+    def update_version_manager(self):
+        fsck_outcome = self._fsck_repo('version_manager')
+
+        if self.fsck_outcome[0] and (self.fsck_outcome[1] == None):
+
+            # fetch new tags and get latest available
+            if self._fetch_tags('version_manager')[0]:
+                version_manager_version_list = self._get_tag_list('version_manager')[1]
+
+                if version_manager_version_list[0]:
+                    try: self.latest_version_manager_version = str([tag for tag in (version_manager_version_list[1]).split('\n') if "beta" not in tag][0])
+                    except: self.latest_version_manager_version = self.default_version_manager_version
+
+                    try: self.latest_version_manager_beta = str([tag for tag in (version_manager_version_list[1]).split('\n') if "beta" in tag][0])
+                    except: self.latest_version_manager_beta = self.default_version_manager_version
+
+                # check that version actually needs updating:
+
+
+                if self.copy_version_manager_update_script():
+                    full_cmd = copied_update_version_manager_script + ' ' + self.latest_version_manager_version
+                    if not self.run_in_shell('home', full_cmd)[0]:
+                        pass
+                        # something has gone wrong, not running update and killing python!
+                        # otherwise this process will close
+
+            # if this fails:
+            self.start_update_procedure()
+
+            # copy script to home directory
+            # open it up
+            # sys.exit()
+
+    def copy_version_manager_update_script(self):
+        cmd = 'sudo cp ' + original_update_version_manager_script + ' ' + home_dir
+        self.run_in_shell('home', cmd)
+        if os.path_exists(copied_update_version_manager_script):
+            make_executable = 'chmod a+x ' + copied_update_version_manager_script
+            self.run_in_shell('home', make_executable)
+            return True
+        else:
+            return False
+
+
     def start_update_procedure(self, dt):
+        # rename and refactor to only update software and platform
+
+
         # starting it on a separate thread so that the process doesn't interfere with screen updates
         t = threading.Thread(target=self.standard_update)
         t.daemon = True
@@ -121,21 +194,22 @@ class VersionManager(object):
     def standard_update(self):
         self.outcome_to_screens('Setting up repositories to get updates from...', subtitle = True)
         self.set_remotes()
-        self._clone_backup_repos_from_URL() # if wifi available
+        if self.use_wifi: self._clone_backup_repos_from_URL()
 
-        if self.prepare_for_update():
+        [update_platform, update_software, update_version_manager] = self.prepare_for_update()
+
+        if self.update_platform and self.update_software:
+
             self.outcome_to_screens('Fetching latest versions...', subtitle = True)
             fetch_outcome = self._fetch_tags_for_all_repos()
 
             if fetch_outcome[0]:
 
+                self.outcome_to_screens('')
                 self.outcome_to_screens('Versions fetched.')
 
                 # get latest non-beta versions 
                 self.refresh_latest_versions()
-
-                # HERE - set up updatae for version_manager
-
 
                 self.outcome_to_screens('Checking version compatibility...', subtitle = True)
                 # check compatibility
@@ -159,6 +233,8 @@ class VersionManager(object):
                 self.outcome_to_screens('')
 
                 if self._do_checkout_and_check('easycut', easycut_to_checkout):
+
+
                     if self._do_checkout_and_check('platform', platform_to_checkout):
 
                         # BREAK POINT FOR TESTING 
@@ -173,9 +249,8 @@ class VersionManager(object):
                             # need to test behaviour of this with & without wifi
                             ansible_outcome = self._do_platform_ansible_run()
 
-                            self.outcome_to_screens(str(ansible_outcome[1]))
-
-                            if ansible_outcome[0]: 
+                            if ansible_outcome[0]:
+                                self.outcome_to_screens()
                                 return True
 
                             else:
@@ -202,25 +277,20 @@ class VersionManager(object):
                                 # something is going wrong
                                 pass
 
+        else: 
 
+            # repair failed 
+            return False
 
         # if update is not succcessful for whatever reason, will need to execute a backup plan
         return False
 
     def _do_checkout_and_check(self, repo, version):
-        # this bit is breaking, will need to investigate next
-
-        print(self._current_version(repo))
-        print version
-        # do checkout
-        # also want to send update messages to screen here...
         checkout_success = self._checkout_new_version(repo, version)
         if checkout_success[0]:
 
             # confirm new version
             new_current_version = self._current_version(repo)
-
-            print new_current_version
 
             # update class variables
             if repo == 'platform': self.current_platform_version = new_current_version
@@ -297,27 +367,44 @@ class VersionManager(object):
 
     def prepare_for_update(self):
 
+        platform_ready = False
+        easycut_ready = False
+        version_manager_ready = False
+
+        self.outcome_to_screens('Checking that local software repositories are healthy...', subtitle=True)
+
         platform_fsck_outcome = self._fsck_repo('platform')
         easycut_fsck_outcome = self._fsck_repo('easycut')
         version_manager_fsck_outcome = self._fsck_repo('version_manager')
 
-        if not platform_fsck_outcome[0]:
-            print(platform_fsck_outcome) # when screens are set up, print this outcome to details screen
+        if (platform_fsck_outcome[0]) and (platform_fsck_outcome[1] == None):
+            platform_ready = True
+        else: 
+            self.outcome_to_screens('Attempting to repair and tidy up platform repository...')
+            print(platform_fsck_outcome[1])
             # try repair based on outcome
             # if it doesn't succeed, then can return False and quit the function
-            if not self.standard_repair_procedure(platform): return False
+            if not self.standard_repair_procedure(platform): platform_ready = False
 
-        if not easycut_fsck_outcome[0]:
-            print(easycut_fsck_outcome) # when screens are set up, print this outcome to details screen
+        if (easycut_fsck_outcome[0]) and (easycut_fsck_outcome[1] == None):
+            easycut_ready = True
+        else:
+            self.outcome_to_screens('Attempting to repair and tidy up software repository...')
+            print(easycut_fsck_outcome[1])
             # try repair based on outcome
-            if not self.standard_repair_procedure(easycut): return False
+            if not self.standard_repair_procedure(easycut): easycut_ready = False
 
-        if not version_manager_fsck_outcome[0]:
-            print(version_manager_fsck_outcome) # when screens are set up, print this outcome to details screen
+        # this one really needs doing from the external python script for version_manager only, although can be checked. 
+        if (version_manager_fsck_outcome[0]) or (version_manager_fsck_outcome[1] == None):
+            version_manager_ready = True
+        else:
+            self.outcome_to_screens('Attempting to repair and tidy up version manager repository...')
+            print(version_manager_fsck_outcome)
+            repair_version_manager = True
             # try repair based on outcome
-            if not self.standard_repair_procedure(version_manager): return False
+            if not self.standard_repair_procedure(version_manager): version_manager_ready = False
 
-        return True
+        return [platform_ready, easycut_ready, version_manager_ready]
 
     def standard_repair_procedure(self, repo):
         # git-repair
@@ -390,12 +477,6 @@ class VersionManager(object):
             try: self.latest_easycut_beta = str([tag for tag in (easycut_version_list[1]).split('\n') if "beta" in tag][0])
             except: self.latest_easycut_beta = ''
 
-        if version_manager_version_list[0]:
-            try: self.latest_version_manager_version = str([tag for tag in (version_manager_version_list[1]).split('\n') if "beta" not in tag][0])
-            except: self.latest_version_manager_version = ''
-
-            try: self.latest_version_manager_beta = str([tag for tag in (version_manager_version_list[1]).split('\n') if "beta" in tag][0])
-            except: self.latest_version_manager_beta = ''
 
 #-------------------------------------------------------------------------------------------------------------------
 
