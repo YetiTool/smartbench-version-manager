@@ -246,14 +246,7 @@ class VersionManager(object):
 
     def _check_compatibility(self, PL_version, SW_version):
         # so get object that has PL/SW: 'vx.x.x'
-
         dict_object = filter(lambda platform_version: platform_version['PL-SW'] == PL_version, self.version_matrix)[0]
-
-        print 'dict object'
-        print dict_object
-
-        print 'version matrix'
-        print list(self.version_matrix)
 
         # return if compatible
         if dict_object[SW_version] == '1':
@@ -262,18 +255,8 @@ class VersionManager(object):
             return False
 
     def _find_compatible_platform(self, SW_version):
-        # this needs checking
-        print SW_version
-
-        temp_matrix = self.version_matrix
-        print(list(self.version_matrix))
         dict_object = filter(lambda software_version: software_version[str(SW_version)] == '1', self.version_matrix)[-1]
-        print dict_object
-        print 'chosen one'
-        print dict_object['PL-SW']
-
         return dict_object['PL-SW']
-
 
     ## SET UP REMOTE REPOS
     def set_remotes(self):
