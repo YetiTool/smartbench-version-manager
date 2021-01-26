@@ -267,7 +267,7 @@ class VersionManager(object):
 
         temp_matrix = self.version_matrix
         print(list(self.version_matrix))
-        dict_object = filter(lambda software_version: software_version[str(SW_version)] == '1', self.version_matrix)
+        dict_object = filter(lambda software_version: software_version[str(SW_version)] == '1', self.version_matrix)[-1]
         print dict_object
         print 'chosen one'
         print dict_object['PL-SW']
