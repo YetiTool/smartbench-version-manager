@@ -247,7 +247,7 @@ class VersionManager(object):
         # so get object that has PL/SW: 'vx.x.x'
         temp_matrix = self.version_matrix
         print 'version matrix'
-        print list(self.version_matrix)
+
 
         dict_object = filter(lambda platform_version: platform_version['PL-SW'] == PL_version, temp_matrix)[0]
 
