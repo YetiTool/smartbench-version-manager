@@ -202,6 +202,8 @@ class VersionManager(object):
         return False
 
     def _do_checkout_and_check(self, repo, version):
+        # this bit is breaking, will need to investigate next
+
         # do checkout
         # also want to send update messages to screen here...
         checkout_success = self._checkout_new_version(repo, version)
@@ -250,7 +252,7 @@ class VersionManager(object):
 
         # return if compatible
         if dict_object[SW_version] == '1':
-            return False
+            return True
         else:
             return False
 
