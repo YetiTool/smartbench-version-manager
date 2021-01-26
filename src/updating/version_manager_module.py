@@ -269,7 +269,8 @@ class VersionManager(object):
     def _find_compatible_platform(self, SW_version):
         # this needs checking
         print SW_version
-        # WHY DO YOU CEASE EXISTING
+
+        # why why why
         temp_matrix = self.version_matrix
         print(list(temp_matrix))
         dict_object = filter(lambda software_version: software_version[str(SW_version)] == '1', temp_matrix)
