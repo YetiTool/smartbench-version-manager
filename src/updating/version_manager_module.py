@@ -482,7 +482,7 @@ class VersionManager(object):
 
     # describe current tag
     def _current_version(self, repo):
-        return (self.run_in_shell(repo, 'git describe --tags')[1]).strip('\n', ' ')
+        return (self.run_in_shell(repo, 'git describe --tags')[1]).strip('\n ')
 
 
     ### DO UPDATES
