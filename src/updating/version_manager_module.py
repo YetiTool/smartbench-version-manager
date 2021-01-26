@@ -46,6 +46,8 @@ tab = '\t'
 
 class VersionManager(object):
 
+    default_version_manager_version = 'first_draft' # using for dev
+
     current_platform_version = ''
     current_easycut_version = ''
     current_version_manager_version = ''
@@ -56,8 +58,6 @@ class VersionManager(object):
     latest_easycut_beta = ''
     latest_version_manager_version = default_version_manager_version
     latest_version_manager_beta = ''
-
-    default_version_manager_version = 'first_draft' # using for dev
 
     use_usb_remote = False
     use_wifi = False
