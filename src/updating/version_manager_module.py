@@ -240,16 +240,14 @@ class VersionManager(object):
 
     # component compatibility functions
     def _load_matrix(self):
-        self.version_matrix = csv.DictReader(open(version_matrix_file), delimiter = '\t')
+        version_matrix_iterable = csv.DictReader(open(version_matrix_file), delimiter = '\t')
+        self.version_matrix = list(version_matrix_iterable)
         # reads in as: 'PL-SW': 'v0.1.1', 'v0.0.1': '1', 'v0.0.2': '1', ... etc.
 
     def _check_compatibility(self, PL_version, SW_version):
         # so get object that has PL/SW: 'vx.x.x'
-        temp_matrix = self.version_matrix
-        print 'version matrix'
 
-
-        dict_object = filter(lambda platform_version: platform_version['PL-SW'] == PL_version, temp_matrix)[0]
+        dict_object = filter(lambda platform_version: platform_version['PL-SW'] == PL_version, self.version_matrix)[0]
 
         print 'dict object'
         print dict_object
@@ -257,9 +255,6 @@ class VersionManager(object):
         print 'version matrix'
         print list(self.version_matrix)
 
-
-
-        # this bit worked fine 20 minutes ago.
         # return if compatible
         if dict_object[SW_version] == '1':
             return False
@@ -270,16 +265,15 @@ class VersionManager(object):
         # this needs checking
         print SW_version
 
-        # why why why
         temp_matrix = self.version_matrix
-        print(list(temp_matrix))
-        dict_object = filter(lambda software_version: software_version[str(SW_version)] == '1', temp_matrix)
+        print(list(self.version_matrix))
+        dict_object = filter(lambda software_version: software_version[str(SW_version)] == '1', self.version_matrix)
         print dict_object
-        # print 'chosen one'
-        # print dict_object['PL-SW']
+        print 'chosen one'
+        print dict_object['PL-SW']
 
-        # return dict_object['PL-SW']
-        return
+        return dict_object['PL-SW']
+
 
     ## SET UP REMOTE REPOS
     def set_remotes(self):
