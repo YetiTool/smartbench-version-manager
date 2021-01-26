@@ -86,7 +86,7 @@ class VersionManager(object):
         # and instead go straight to start_update_procedure
 
         history_command = 'history | tail -n 5'
-        list_of_prev_commands = self.run_in_shell('home', history_command)
+        list_of_prev_commands = self.run_in_shell('home', history_command)[1]
 
         checkout_command = 'git checkout -f ' + self.latest_version_manager_version
         if any(checkout_command in s for s in list_of_prev_commands):
