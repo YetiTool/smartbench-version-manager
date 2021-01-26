@@ -134,67 +134,73 @@ class VersionManager(object):
                 # get latest non-beta versions 
                 self.refresh_latest_versions()
 
-                self.outcome_to_screens('Checking that all versions are compatible...', subtitle = True)
+                # HERE - set up updatae for version_manager
+
+
+                self.outcome_to_screens('Checking version compatibility...', subtitle = True)
                 # check compatibility
                 if self.compatibility_check(self.latest_platform_version, self.latest_easycut_version):
                     platform_to_checkout = self.latest_platform_version
                     easycut_to_checkout = self.latest_easycut_version
 
-                    self.outcome_to_screens('Updating to versions:')
-                    self.outcome_to_screens('Platform: ' + platform_to_checkout)
-                    self.outcome_to_screens('Software: ' + easycut_to_checkout)
-
-                    # BREAK POINT FOR TESTING 
-                    self.el.write_buffer_to_RST()
-                    print('Buffer written')
-                    return
-
                 else:
+
+                    # might refactor all of this bit back into the compatibility_check function
+                    self.outcome_to_screens('Latest versions of software and platform are not compatibile')
+                    self.outcome_to_screens('Finding latest compatibile versions...')
                     # compatibility check has failed, need to check which is the latest platform version 
                     # compatibile with the software:
                     platform_to_checkout = self._find_compatible_platform(self.latest_easycut_version)
                     easycut_to_checkout = self.latest_easycut_version
 
-                    # will want to update screen to reflect this
+                self.outcome_to_screens('Updating to versions:')
+                self.outcome_to_screens('Platform: ' + platform_to_checkout)
+                self.outcome_to_screens('Software: ' + easycut_to_checkout)
+                self.outcome_to_screens('')
 
-                    if self._do_checkout_and_check(self, 'easycut', easycut_to_checkout):
-                        if self._do_checkout_and_check(self, 'platform', platform_to_checkout):
+                if self._do_checkout_and_check('easycut', easycut_to_checkout):
+                    if self._do_checkout_and_check('platform', platform_to_checkout):
 
-                            # double check compatibility of current versions
-                            if self.compatibility_check(self.current_platform_version, self.current_easycut_version):
-                            
-                                # do ansible run, and hopefully do cursory check that it worked??
-                                # need to test behaviour of this with & without wifi
-                                ansible_outcome = self._do_platform_ansible_run()
+                        # BREAK POINT FOR TESTING 
+                        self.el.write_buffer_to_RST()
+                        print('Buffer written')
+                        return
 
-                                self.outcome_to_screens(str(ansible_outcome[1]))
+                        # double check compatibility of current versions
+                        if self.compatibility_check(self.current_platform_version, self.current_easycut_version):
+                        
+                            # do ansible run, and hopefully do cursory check that it worked??
+                            # need to test behaviour of this with & without wifi
+                            ansible_outcome = self._do_platform_ansible_run()
 
-                                if ansible_outcome[0]: 
-                                    return True
+                            self.outcome_to_screens(str(ansible_outcome[1]))
 
-                                else:
-                                    # argh, something's gone wrong. need to play with ansible to figure out what should happen next
-                                    # in this scenario
-                                    pass
+                            if ansible_outcome[0]: 
+                                return True
 
                             else:
-                                platform_to_checkout = self._find_compatible_platform(self.current_easycut_version)
-                                self.outcome_to_screens(platform_to_checkout)
-                                if self._do_checkout_and_check(self, 'platform', platform_to_checkout):
-                                    if self.compatibility_check(self.current_platform_version, self.current_easycut_version):
-                                        ansible_outcome = self._do_platform_ansible_run()
-                                        if ansible_outcome[0]: 
-                                            return True
-                                        else:
-                                            # argh, something's gone wrong. need to play with ansible to figure out what should happen next
-                                            # in this scenario
-                                            pass
+                                # argh, something's gone wrong. need to play with ansible to figure out what should happen next
+                                # in this scenario
+                                pass
+
+                        else:
+                            platform_to_checkout = self._find_compatible_platform(self.current_easycut_version)
+                            self.outcome_to_screens(platform_to_checkout)
+                            if self._do_checkout_and_check('platform', platform_to_checkout):
+                                if self.compatibility_check(self.current_platform_version, self.current_easycut_version):
+                                    ansible_outcome = self._do_platform_ansible_run()
+                                    if ansible_outcome[0]: 
+                                        return True
                                     else:
-                                        # something is going wrong, 
+                                        # argh, something's gone wrong. need to play with ansible to figure out what should happen next
+                                        # in this scenario
                                         pass
                                 else:
-                                    # something is going wrong
+                                    # something is going wrong, 
                                     pass
+                            else:
+                                # something is going wrong
+                                pass
 
 
 
@@ -204,6 +210,8 @@ class VersionManager(object):
     def _do_checkout_and_check(self, repo, version):
         # this bit is breaking, will need to investigate next
 
+        print(self._current_version(repo)[1])
+        print version
         # do checkout
         # also want to send update messages to screen here...
         checkout_success = self._checkout_new_version(repo, version)
@@ -212,10 +220,12 @@ class VersionManager(object):
             # confirm new version
             new_current_version = self._current_version(repo)[1]
 
+            print new_current_version
+
             # update class variables
-            if repo == 'platform': current_platform_version = new_current_version
-            if repo == 'easycut': current_easycut_version = new_current_version
-            if repo == 'version_manager': current_version_manager_version = new_current_version
+            if repo == 'platform': self.current_platform_version = new_current_version
+            if repo == 'easycut': self.current_easycut_version = new_current_version
+            if repo == 'version_manager': self.current_version_manager_version = new_current_version
 
             # check current version == latest checked out version
             if version == new_current_version:
@@ -612,7 +622,7 @@ class ErrorLogWriter(object):
         pass
 
     def add_subtitle(self, subtitle):
-        title_list = ['',subtitle, len(subtitle)*'-']
+        title_list = ['',subtitle, len(subtitle)*'-', '']
         self.verbose_buffer.extend(title_list)
 
     def format_ouputs(self, exit_code, stdout, stderr):
