@@ -210,7 +210,7 @@ class VersionManager(object):
     def _do_checkout_and_check(self, repo, version):
         # this bit is breaking, will need to investigate next
 
-        print(self._current_version(repo)[1])
+        print(self._current_version(repo))
         print version
         # do checkout
         # also want to send update messages to screen here...
@@ -218,7 +218,7 @@ class VersionManager(object):
         if checkout_success[0]:
 
             # confirm new version
-            new_current_version = self._current_version(repo)[1]
+            new_current_version = self._current_version(repo)
 
             print new_current_version
 
@@ -482,7 +482,7 @@ class VersionManager(object):
 
     # describe current tag
     def _current_version(self, repo):
-        return self.run_in_shell(repo, 'git describe --tags')       
+        return (self.run_in_shell(repo, 'git describe --tags')[1]).strip('\n', ' ')
 
 
     ### DO UPDATES
