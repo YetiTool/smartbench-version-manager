@@ -141,7 +141,7 @@ class VersionManager(object):
     def update_version_manager(self):
         fsck_outcome = self._fsck_repo('version_manager')
 
-        if self.fsck_outcome[0] and (self.fsck_outcome[1] == None):
+        if fsck_outcome[0] and (fsck_outcome[1] == None):
 
             # fetch new tags and get latest available
             if self._fetch_tags('version_manager')[0]:
