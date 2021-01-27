@@ -73,7 +73,24 @@ class VersionManager(object):
         self.poll_wifi = Clock.schedule_interval(self.check_wifi_connection, 2)
 
         # need to build in: 
-        # also what happens if: - do fetch, lose wifi, checkout tag/branch/etc? 
+        
+        # lots of the error handling stuff still
+        # what happens if: - do fetch, lose wifi, checkout tag/branch/etc?
+        # refactor main update in this module to only apply to easycut and platform
+
+        # oh god what happens if the version manager doesn't update the platform-software-matrix ??? 
+        # ARGH
+
+        # use wget (Raw link from github) and copy it individually onto the USB stick. therefore if there is ANY corruption can still get this file. 
+        # https://askubuntu.com/questions/912545/how-to-retrive-a-single-file-from-github-using-git
+        # https://stackoverflow.com/questions/1125476/retrieve-a-single-file-from-a-repository/18331440
+
+        # still need to do a checkout power loss test
+
+        # also need to do beta version bits still
+
+        # need to add in how this works with easycut
+
 
         # CONNECTIVITY CHECKS, i.e. if wifi or if usb: add usb
 
@@ -154,7 +171,8 @@ class VersionManager(object):
                     try: self.latest_version_manager_beta = str([tag for tag in (version_manager_version_list[1]).split('\n') if "beta" in tag][0])
                     except: self.latest_version_manager_beta = self.default_version_manager_version
 
-                # check that version actually needs updating:
+                # check that version actually needs updating here, no point doing this if it's not needed and it risks
+                # just upsetting the repository
 
 
                 if self.copy_version_manager_update_script():
@@ -167,9 +185,12 @@ class VersionManager(object):
             # if this fails:
             self.start_update_procedure()
 
-            # copy script to home directory
-            # open it up
-            # sys.exit()
+        else: 
+            # here need to report that there's an issue and to tell user to repair using easycut. 
+            # then continue with update of everything else. 
+            self.standard_update_procedure()
+
+            pass
 
     def copy_version_manager_update_script(self):
         cmd = 'sudo cp ' + original_update_version_manager_script + ' ' + home_dir
