@@ -421,7 +421,7 @@ class VersionManager(object):
             print(platform_fsck_outcome[1]) # presumably this needs to go to screen as output, rather than just print
             # try repair based on outcome
             # if it doesn't succeed, then can return False and quit the function
-            if not self.standard_repair_procedure(platform): platform_ready = False
+            if not self.standard_repair_procedure('platform'): platform_ready = False
 
         if (easycut_fsck_outcome[0]) and (easycut_fsck_outcome[1] == None):
             easycut_ready = True
@@ -429,7 +429,7 @@ class VersionManager(object):
             self.outcome_to_screens('Attempting to repair and tidy up software repository...')
             print(easycut_fsck_outcome[1]) # presumably this needs to go to screen as output, rather than just print
             # try repair based on outcome
-            if not self.standard_repair_procedure(easycut): easycut_ready = False
+            if not self.standard_repair_procedure('easycut'): easycut_ready = False
 
         # this one really needs doing from the external python script for version_manager only, although can be checked. 
         if (version_manager_fsck_outcome[0]) or (version_manager_fsck_outcome[1] == None):
@@ -439,7 +439,7 @@ class VersionManager(object):
             print(version_manager_fsck_outcome) # presumably this needs to go to screen as output, rather than just print
             repair_version_manager = True
             # try repair based on outcome
-            if not self.standard_repair_procedure(version_manager): version_manager_ready = False
+            if not self.standard_repair_procedure('version_manager'): version_manager_ready = False
 
         return [platform_ready, easycut_ready, version_manager_ready]
 
