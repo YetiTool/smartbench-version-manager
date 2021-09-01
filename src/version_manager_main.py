@@ -21,6 +21,23 @@ from updating import version_manager_module
 
 from updating.screens import screen_updating, screen_more_details
 
+# pass update code to version manager, so that it knows if it needs to look for its own update
+
+try: 
+    update_code = sys.argv[1]
+    ## Update codes: 
+    # -ec: called from easycut (need to start with vm update)
+    # -su: successful update
+    # -uu: unsuccessful update (i.e. needs a repair)
+
+    ## ooh also if any of these also have a 'b', that means beta allowed!
+
+except:
+    # no update code - has been called by forgetful human!
+    # default to -ec
+    update_code = '-ec'
+
+
 class SBVersionManagerUI(App):
 
     def build(self):
@@ -36,7 +53,7 @@ class SBVersionManagerUI(App):
         sm.current = 'updating'
 
         if sys.platform != 'win32' and sys.platform != 'darwin':
-            vm.start_version_manager()
+            vm.start_version_manager(update_code)
 
         return sm
 

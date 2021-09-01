@@ -8,4 +8,5 @@ killall python
 sleep 5
 cd version_manager_path && git checkout -f $1
 sleep 10
-python version_manager_main
+# need to add in an actual check that the checkout was successful before passing argument
+python version_manager_main -su

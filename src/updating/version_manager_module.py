@@ -62,6 +62,8 @@ class VersionManager(object):
     use_usb_remote = False
     use_wifi = False
 
+    beta_ok = False
+
     def __init__(self, screen_manager):
 
         self.sm = screen_manager
@@ -75,15 +77,15 @@ class VersionManager(object):
         # need to build in: 
         
         # lots of the error handling stuff still
-        # what happens if: - do fetch, lose wifi, checkout tag/branch/etc?
+        # what happens if: - do fetch, lose wifi, checkout tag/branch/etc? - this is fine as long as fetch completes!
         # refactor main update in this module to only apply to easycut and platform
 
         # oh god what happens if the version manager doesn't update the platform-software-matrix ??? 
         # ARGH
 
-        # use wget (Raw link from github) and copy it individually onto the USB stick. therefore if there is ANY corruption can still get this file. 
-        # https://askubuntu.com/questions/912545/how-to-retrive-a-single-file-from-github-using-git
-        # https://stackoverflow.com/questions/1125476/retrieve-a-single-file-from-a-repository/18331440
+        ## use wget (Raw link from github) and copy it individually onto the USB stick. therefore if there is ANY corruption can still get this file. 
+        ## https://askubuntu.com/questions/912545/how-to-retrive-a-single-file-from-github-using-git
+        ## https://stackoverflow.com/questions/1125476/retrieve-a-single-file-from-a-repository/18331440
 
         # still need to do a checkout power loss test
 
@@ -97,24 +99,30 @@ class VersionManager(object):
         # Simplify what update we look for from now on: Standardize update packages from version x.x.x onwards to look for 
         # SmartBench-SW-update...zip, and then unpack that to find git repo zips, and then unpack those accordingly.
 
-    def start_version_manager(self):
+    def start_version_manager(self, update_code):
 
-        # if recent history shows that latest version manager has been checked out, skip set up connections
-        # and instead go straight to start_update_procedure
+        # The order of events will be different if version manager needs to update itself. 
 
-        history_command = 'history | tail -n 5'
-        list_of_prev_commands = self.run_in_shell('home', history_command)[1]
+        # are beta updates ok? 
+        if "b" in update_code:
+            self.beta_ok = True
 
-        checkout_command = 'git checkout -f ' + self.latest_version_manager_version
-        if any(checkout_command in s for s in list_of_prev_commands):
-            # otherwise, set up connections and then do update version_manager
+        ## Update codes: 
+        # -ec: called from easycut (need to start with vm update)
+        # -su: successful update
+        # -uu: unsuccessful update (i.e. needs a repair)
+
+        if "-ec" in update_code:
+            self.set_up_connections()
+
+        elif "-su" in update_code:
             self.start_update_procedure()
 
-        else:
-            self.set_up_connections() # this also makes the call to update version manager
-
-        # need to also do this check for beta version
-        # self.start_update_procedure()
+        elif "-uu" in update_code:
+            # here need to report that there's an issue and to tell user to repair using easycut. 
+            # OR if that fails, have QR code that goes to repair info
+            # therefore probs want a new screen for this
+            self.outcome_to_screens('Version manager could not update, repair with EasyCut')
 
 
     def set_up_connections(self):
@@ -124,12 +132,14 @@ class VersionManager(object):
 
         def check_connections(importing_files):
 
+            # If wifi or USB fully connected and remote repo (origin or USB) is accessible: 
             if self.use_wifi or self.use_usb_remote:
 
                 if self.use_wifi: self.outcome_to_screens('Wifi connection found.')
                 if self.use_usb_remote: self.outcome_to_screens('Update file found on USB')
                 self.update_version_manager()
 
+            # 
             elif (self.usb_stick.is_available() and importing_files == False):
 
                 importing_files = True
@@ -162,7 +172,7 @@ class VersionManager(object):
 
             # fetch new tags and get latest available
             if self._fetch_tags('version_manager')[0]:
-                version_manager_version_list = self._get_tag_list('version_manager')[1]
+                version_manager_version_list = self._get_tag_list('version_manager') # [1] (this index was here but I'm p. sure it's wrong so I've commented it away) 
 
                 if version_manager_version_list[0]:
                     try: self.latest_version_manager_version = str([tag for tag in (version_manager_version_list[1]).split('\n') if "beta" not in tag][0])
@@ -183,27 +193,29 @@ class VersionManager(object):
                         # otherwise this process will close
 
             # if this fails:
-            self.start_update_procedure()
+            self.start_update_procedure() # this isn't a solution??
 
         else: 
             # here need to report that there's an issue and to tell user to repair using easycut. 
             # then continue with update of everything else. 
-            self.standard_update_procedure()
+            self.standard_update_procedure() # this might be here for testing?? 
 
-            pass
+            pass # ???
 
     def copy_version_manager_update_script(self):
+        # add in: use the run in shell return to check that cmds run successfully
+
         cmd = 'sudo cp ' + original_update_version_manager_script + ' ' + home_dir
         self.run_in_shell('home', cmd)
         if os.path_exists(copied_update_version_manager_script):
             make_executable = 'chmod a+x ' + copied_update_version_manager_script
-            self.run_in_shell('home', make_executable)
+            self.run_in_shell('home', make_executable) # maybe check that this works as well??
             return True
         else:
             return False
 
 
-    def start_update_procedure(self, dt):
+    def start_update_procedure(self):
         # rename and refactor to only update software and platform
 
 
@@ -222,7 +234,7 @@ class VersionManager(object):
         if self.update_platform and self.update_software:
 
             self.outcome_to_screens('Fetching latest versions...', subtitle = True)
-            fetch_outcome = self._fetch_tags_for_all_repos()
+            fetch_outcome = self._fetch_tags_for_all_repos() # I don't think this works the way that you think this works, past me. 
 
             if fetch_outcome[0]:
 
@@ -313,6 +325,8 @@ class VersionManager(object):
             # confirm new version
             new_current_version = self._current_version(repo)
 
+            ## I Think change the order of operations here? i.e check first and then update class variables? 
+
             # update class variables
             if repo == 'platform': self.current_platform_version = new_current_version
             if repo == 'easycut': self.current_easycut_version = new_current_version
@@ -402,7 +416,7 @@ class VersionManager(object):
             platform_ready = True
         else: 
             self.outcome_to_screens('Attempting to repair and tidy up platform repository...')
-            print(platform_fsck_outcome[1])
+            print(platform_fsck_outcome[1]) # presumably this needs to go to screen as output, rather than just print
             # try repair based on outcome
             # if it doesn't succeed, then can return False and quit the function
             if not self.standard_repair_procedure(platform): platform_ready = False
@@ -411,7 +425,7 @@ class VersionManager(object):
             easycut_ready = True
         else:
             self.outcome_to_screens('Attempting to repair and tidy up software repository...')
-            print(easycut_fsck_outcome[1])
+            print(easycut_fsck_outcome[1]) # presumably this needs to go to screen as output, rather than just print
             # try repair based on outcome
             if not self.standard_repair_procedure(easycut): easycut_ready = False
 
@@ -420,7 +434,7 @@ class VersionManager(object):
             version_manager_ready = True
         else:
             self.outcome_to_screens('Attempting to repair and tidy up version manager repository...')
-            print(version_manager_fsck_outcome)
+            print(version_manager_fsck_outcome) # presumably this needs to go to screen as output, rather than just print
             repair_version_manager = True
             # try repair based on outcome
             if not self.standard_repair_procedure(version_manager): version_manager_ready = False
@@ -532,7 +546,7 @@ class VersionManager(object):
 
     ## fetch tags for all repositories
 
-    def _fetch_tags_for_all_repos(self):
+    def _fetch_tags_for_all_repos(self): # need a better way to return success for this
 
         platform_success = self._fetch_tags('platform')
         easycut_success = self._fetch_tags('easycut')
