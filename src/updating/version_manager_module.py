@@ -108,17 +108,17 @@ class VersionManager(object):
             self.beta_ok = True
 
         ## Update codes: 
-        # -ec: called from easycut (need to start with vm update)
-        # -su: successful update
-        # -uu: unsuccessful update (i.e. needs a repair)
+        # ec: called from easycut (need to start with vm update)
+        # su: successful update
+        # uu: unsuccessful update (i.e. needs a repair)
 
-        if "-ec" in update_code:
+        if "ec" in update_code:
             self.set_up_connections()
 
-        elif "-su" in update_code:
+        elif "su" in update_code:
             self.start_update_procedure()
 
-        elif "-uu" in update_code:
+        elif "uu" in update_code:
             # here need to report that there's an issue and to tell user to repair using easycut. 
             # OR if that fails, have QR code that goes to repair info
             # therefore probs want a new screen for this
