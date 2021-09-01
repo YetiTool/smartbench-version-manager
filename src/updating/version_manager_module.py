@@ -168,6 +168,7 @@ class VersionManager(object):
     def update_version_manager(self):
         fsck_outcome = self._fsck_repo('version_manager')
 
+        # hmm this is going to the else statement
         if fsck_outcome[0] and (fsck_outcome[1] == None):
 
             # fetch new tags and get latest available
@@ -198,7 +199,8 @@ class VersionManager(object):
         else: 
             # here need to report that there's an issue and to tell user to repair using easycut. 
             # then continue with update of everything else. 
-            self.standard_update_procedure() # this might be here for testing?? 
+            # self.standard_update() # this might be here for testing??
+            self.outcome_to_screens('Version manager could not update, repair with EasyCut')
 
             pass # ???
 
