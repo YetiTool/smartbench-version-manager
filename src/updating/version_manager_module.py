@@ -451,7 +451,7 @@ class VersionManager(object):
         # git gc 
         gc_outcome = self._gc_repo(repo)
         # git fsck and report
-        fsck_outcome = self._fsck_reop(repo)
+        fsck_outcome = self._fsck_repo(repo)
 
         # print details of repair to screen
         if (repair_outcome[0] and prune_outcome[0] and gc_outcome[0] and fsck_outcome[0]):
