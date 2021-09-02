@@ -31,6 +31,12 @@ os.environ['PYTHONUNBUFFERED'] = "1"
 
 ## Successful bash exit codes are typically == 0
 
+
+### REPO STRINGS
+version_manager = version_manager
+easycut = 'easycut'
+platform = 'platform'
+
 ### REPO PATHS
 
 home_dir="/home/pi/"
@@ -166,18 +172,12 @@ class VersionManager(object):
 
 
     def update_version_manager(self):
-        fsck_outcome = self._fsck_repo('version_manager')
 
-        print("FSCK OUTCOME VM")
-        print(str(fsck_outcome[0]))
-        print(str(fsck_outcome[1]))
-
-        # hmm this is going to the else statement
-        if fsck_outcome[0] and (fsck_outcome[1] == None):
+        if check_repo(version_manager):
 
             # fetch new tags and get latest available
-            if self._fetch_tags('version_manager')[0]:
-                version_manager_version_list = self._get_tag_list('version_manager') # [1] (this index was here but I'm p. sure it's wrong so I've commented it away) 
+            if self._fetch_tags(version_manager)[0]:
+                version_manager_version_list = self._get_tag_list(version_manager) # [1] (this index was here but I'm p. sure it's wrong so I've commented it away) 
 
                 if version_manager_version_list[0]:
                     try: self.latest_version_manager_version = str([tag for tag in (version_manager_version_list[1]).split('\n') if "beta" not in tag][0])
@@ -447,6 +447,22 @@ class VersionManager(object):
 
         return [platform_ready, easycut_ready, version_manager_ready]
 
+
+    # prune and gc before the fsck, then check all is well :)
+    def check_repo(self, repo):
+        # git prune
+        self._prune_repo(repo)
+        # git gc 
+        self._gc_repo(repo)
+        # git fsck and report
+        fsck_outcome = self._fsck_repo(repo)
+
+        if fsck_outcome[0] and (fsck_outcome[1] == None):
+            return True
+        else: 
+            return False
+
+    ## REPAIR PROCEDURES 
     def standard_repair_procedure(self, repo):
         # git-repair
         repair_outcome = self._repair_repo(repo)
