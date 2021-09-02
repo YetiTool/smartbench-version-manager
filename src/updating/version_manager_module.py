@@ -175,11 +175,15 @@ class VersionManager(object):
 
         if self.check_repo(version_manager):
 
+            print("Fetching tags for version manager")
             # fetch new tags and get latest available
             if self._fetch_tags(version_manager)[0]:
+
+                print("Get tag list")
                 version_manager_version_list = self._get_tag_list(version_manager) # [1] (this index was here but I'm p. sure it's wrong so I've commented it away) 
 
                 if version_manager_version_list[0]:
+                    print("Sort through tags")
                     try: self.latest_version_manager_version = str([tag for tag in (version_manager_version_list[1]).split('\n') if "beta" not in tag][0])
                     except: self.latest_version_manager_version = self.default_version_manager_version
 
@@ -189,16 +193,17 @@ class VersionManager(object):
                 # check that version actually needs updating here, no point doing this if it's not needed and it risks
                 # just upsetting the repository
 
-
+                print("Copy update script")
                 if self.copy_version_manager_update_script():
                     full_cmd = copied_update_version_manager_script + ' ' + self.latest_version_manager_version
+                    print("Try to run update script")
                     if not self.run_in_shell('home', full_cmd)[0]:
                         pass
                         # something has gone wrong, not running update and killing python!
                         # otherwise this process will close
 
             # if this fails:
-            self.start_update_procedure() # this isn't a solution??
+            print("Tag fetch has 'failed' ?")
 
         else: 
             # here need to report that there's an issue and to tell user to repair using easycut. 
