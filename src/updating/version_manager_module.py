@@ -457,6 +457,10 @@ class VersionManager(object):
         # git fsck and report
         fsck_outcome = self._fsck_repo(repo)
 
+        print("FSCK OUTCOME")
+        print(str(fsck_outcome[0]))
+        print(fsck_outcome[1])
+
         if fsck_outcome[0] and (fsck_outcome[1] == None):
             return True
         else: 
