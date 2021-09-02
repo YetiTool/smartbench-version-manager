@@ -466,7 +466,7 @@ class VersionManager(object):
         else:
             print('fsck outcome still is something')
 
-        if fsck_outcome[0] and (fsck_outcome[1] == None):
+        if fsck_outcome[0] and not fsck_outcome[1]:
             return True
         else: 
             return False
