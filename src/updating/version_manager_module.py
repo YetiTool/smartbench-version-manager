@@ -173,7 +173,7 @@ class VersionManager(object):
 
     def update_version_manager(self):
 
-        if check_repo(version_manager):
+        if self.check_repo(version_manager):
 
             # fetch new tags and get latest available
             if self._fetch_tags(version_manager)[0]:
