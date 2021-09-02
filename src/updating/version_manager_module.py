@@ -168,6 +168,10 @@ class VersionManager(object):
     def update_version_manager(self):
         fsck_outcome = self._fsck_repo('version_manager')
 
+        print("FSCK OUTCOME VM")
+        print(str(fsck_outcome[0]))
+        print(str(fsck_outcome[1]))
+
         # hmm this is going to the else statement
         if fsck_outcome[0] and (fsck_outcome[1] == None):
 
