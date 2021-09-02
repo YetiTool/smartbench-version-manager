@@ -33,7 +33,7 @@ os.environ['PYTHONUNBUFFERED'] = "1"
 
 
 ### REPO STRINGS
-version_manager = version_manager
+version_manager = 'version_manager'
 easycut = 'easycut'
 platform = 'platform'
 
